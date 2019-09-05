@@ -4,6 +4,7 @@ export default class CotisationsSociales {
     remuneration: number = 0;
     accre: boolean;
     PASS: number = 39732;
+    caisseRetraite;
 
     _revenuPro() {
         return this.remuneration;
@@ -14,34 +15,73 @@ export default class CotisationsSociales {
         return tauxMin + ((tauxMax - tauxMin) * (montant - montantMin) / (montantMax - montantMin));
     }
 
+    // MALADIE
     getMaladie(): number {
-        let revenus = Math.max(40 * this.PASS / 100, this._revenuPro());
+        let taux = this.getTauxMaladie();
+        let assiette = this.getAssietteMaladie();
 
-        // https://www.secu-independants.fr/baremes/cotisations-et-contributions/?reg=agence-professions-liberales
-        if (revenus > 110 * this.PASS / 100) {
-            return revenus * 6.5 / 100;
+        return assiette * taux / 100;   
+    }
+
+    getAssietteMaladie(): number {
+        return Math.max(40 * this.PASS / 100, this._revenuPro());
+    }
+
+    getTauxMaladie() {
+        let assiette = this.getAssietteMaladie();
+
+        // https://www.secu-independants.fr/cotisations/presentation-cotisations/liste-des-cotisations/?reg=agence-professions-liberales&pro=profession-liberale&act=actif&ae=non
+        if (assiette > 110 * this.PASS / 100) {
+            return 6.5;
         }
 
         // Taux progressif : entre 1,50 % et 6,50 %
         let tauxMin = 1.5;
         let tauxMax = 6.5;
-        let montantMin = 0;
+        let montantMin = 40  * this.PASS / 100;
         let montantMax = 110 * this.PASS / 100;
 
-        let taux = this._tauxProgressif(montantMin, tauxMin, montantMax, tauxMax, revenus);
-        return revenus * taux / 100;    
+        return this._tauxProgressif(montantMin, tauxMin, montantMax, tauxMax, assiette);
     }
 
-    getAllocationsFamiliales() {
-        let revenus = Math.max(19 * this.PASS / 100, this._revenuPro());
+    // MALADIE 2
+    getMaladie2(): number {
+        let taux = this.getTauxMaladie2();
+        let assiette = this.getAssietteMaladie2();
 
-        // https://www.secu-independants.fr/baremes/cotisations-et-contributions/?reg=agence-professions-liberales
-        if (revenus < 110 * this.PASS / 100) {
+        return assiette * taux / 100;   
+    }
+
+    getAssietteMaladie2(): number {
+        let revenuMinimal = Math.max(40 * this.PASS / 100, this._revenuPro());
+        
+        return Math.min(5 * this.PASS, revenuMinimal);
+    }
+
+    getTauxMaladie2(): number {
+        return 0.85;
+    }
+    
+    // ALLOCATIONS FAMILIALES
+    getAllocationsFamiliales(): number {
+        let taux = this.getTauxAllocationsFamiliales();
+        let assiette = this.getAssietteAllocationsFamiliales();
+
+        return assiette * taux / 100;
+    }
+
+    getAssietteAllocationsFamiliales(): number {
+        return this._revenuPro();
+    }
+
+    getTauxAllocationsFamiliales(): number {
+        let assiette = this.getAssietteAllocationsFamiliales();
+        if (assiette < 110 * this.PASS / 100) {
             return 0;
         }
 
-        if(revenus > 140 * this.PASS / 100) {
-            return revenus * 3.10 / 100;
+        if(assiette > 140 * this.PASS / 100) {
+            return 3.10;
         }
 
         //taux progressif : entre 0 % et 3,10 %
@@ -50,111 +90,81 @@ export default class CotisationsSociales {
         let montantMin = 110 * this.PASS / 100;
         let montantMax = 140 * this.PASS / 100;
 
-        let taux = this._tauxProgressif(montantMin, tauxMin, montantMax, tauxMax, revenus);
-        return revenus * taux / 100;
+        return this._tauxProgressif(montantMin, tauxMin, montantMax, tauxMax, assiette);
     }
 
+    // FORMATION PRO
     getFormationProfessionnelle(): number {
-        return this.PASS * 0.25 / 100;
+        let taux = this.getTauxFormationProfessionnelle();
+        let assiette = this.getAssietteFormationProfessionnelle();
+
+        return assiette * taux / 100;
     }
 
-    getRetraiteBase(): number {
-        // https://www.secu-independants.fr/baremes/cotisations-et-contributions/?reg=agence-professions-liberales
-        let montant = 0;
-
-        // https://www.lecoindesentrepreneurs.fr/affiliation-et-cotisations-a-la-cipav/
-
-        //< à 4 569€
-        if (this._revenuPro() < 11.50 * this.PASS / 100) {
-            montant = 461;
-        }
-
-        // entre 4 569€ et 39 732€
-        if(this._revenuPro() >= 11.50 * this.PASS / 100 && this._revenuPro() < this.PASS) {
-            montant = 8.23 * this._revenuPro() / 100;
-        }
-
-        // de 39 732€ à 198 660€
-        if(this._revenuPro() >= this.PASS && this._revenuPro() < 5 * this.PASS) {
-            montant = (8.23 * this.PASS + 1.87 * this._revenuPro()) / 100;
-        }
-
-        // > à 198 660€
-        if(this._revenuPro() >= 5 * this.PASS) {
-            montant = (8.23 * this.PASS + 1.87 * 5 * this.PASS) / 100;
-        }
-
-        return montant;
+    getAssietteFormationProfessionnelle(): number {
+        return this.PASS;
     }
 
-    getRetraiteComplementaire(): number {
-        //https://www.lecoindesentrepreneurs.fr/affiliation-et-cotisations-a-la-cipav/
-        let assiette = this._revenuPro();
-
-        let montant = 0;
-        if (assiette <= 26580) {
-            montant = 1315;
-        }
-        if (assiette > 26580 && assiette <= 49280) {
-            montant = 2630;
-        }
-        if (assiette > 49280 && assiette <= 57850) {
-            montant = 3945;
-        }
-        if (assiette > 57850 && assiette <= 66400) {
-            montant = 6575;
-        }
-        if (assiette > 66400 && assiette <= 83060) {
-            montant = 9205;
-        }
-        if (assiette > 83060 && assiette <= 103180) {
-            montant = 14465;
-        }
-        if (assiette > 103180 && assiette <= 123300) {
-            montant = 15780;
-        }
-        if (assiette > 123300) {
-            montant = 17095;
-        }
-        return montant;
+    getTauxFormationProfessionnelle(): number {
+        return 0.25;
     }
 
-    getInvaliditeDeces(classe = 'C'): number {
-        let montant = 0;
-        switch(classe) {
-            case 'A':
-                montant = 76;
-            break;
-            case 'B':
-                montant = 228;
-            break;
-            case 'C':
-                montant = 380;
-            break;
-        }
-
-        return montant;
-    }
-
+    // CSG CRDS
     getCsgCrds(): number {
-        // Totalité du revenu de l’activité non salariée + cotisations sociales obligatoires
-        var assiette = Math.max(19 * this.PASS / 100, 
-            this._revenuPro() +
-            this.getMaladie() +
-            this.getAllocationsFamiliales() +
-            this.getRetraiteBase()
-        );
-
-        return assiette * 9.7 / 100;
+        return this.getCsgCrdsDeductible() + this.getCsgCrdsNonDeductible();
     }
 
+    getAssietteCsgCrds(): number {
+        return this._revenuPro() +
+            this.getMaladie() +
+            this.getMaladie2() +
+            this.caisseRetraite.getRetraiteBase() + 
+            this.caisseRetraite.getRetraiteComplementaire() + 
+            this.caisseRetraite.getInvaliditeDeces() + 
+            this.getAllocationsFamiliales();
+    }
+
+    // CSG CRDS DEDUCTIBLE
+    getCsgCrdsDeductible(): number {
+        let taux = this.getTauxCsgCrdsDeductible();
+        let assiette = this.getAssietteCsgCrdsDeductible();
+
+        return assiette * taux / 100;
+    }
+
+    getAssietteCsgCrdsDeductible(): number {
+        return this.getAssietteCsgCrds();
+    }
+
+    getTauxCsgCrdsDeductible(): number {
+        return 2.9;
+    }
+
+    // CSG CRDS DEDUCTIBLE
+    getCsgCrdsNonDeductible(): number {
+        let taux = this.getTauxCsgCrdsNonDeductible();
+        let assiette = this.getAssietteCsgCrdsNonDeductible();
+
+        return assiette * taux / 100;
+    }
+
+    getAssietteCsgCrdsNonDeductible(): number {
+        return this.getAssietteCsgCrds();
+    }
+
+    getTauxCsgCrdsNonDeductible(): number {
+        return 6.8;
+    }
+
+    // COTISATIONS
     getCotisations(): number {
         return this.getMaladie()
+            + this.getMaladie2()
             + this.getAllocationsFamiliales()
             + this.getFormationProfessionnelle()
-            + this.getRetraiteBase()
-            + this.getRetraiteComplementaire()
-            + this.getInvaliditeDeces()
+            + this.caisseRetraite.getRetraiteBase()
+            + this.caisseRetraite.getRetraiteComplementaire()
+            + this.caisseRetraite.getInvaliditeDeces()
             + this.getCsgCrds();
     }
 }

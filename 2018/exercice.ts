@@ -1,4 +1,6 @@
 import CotisationsSociales from "./cotisations-sociales";
+import Cipav from './cipav';
+import SSI from './ssi';
 import ImpotRevenu from "./impot-revenu";
 import ImpotSociete from "./impot-societe";
 
@@ -16,6 +18,7 @@ export default class Exercice {
   nbParts: number = 1;
   nbMois: number = 12;
   forme: string = "EURL";
+  caisseRetraite: string = "CIPAV";
 
   tauxAccreCsSalaire = 0.35;
   tauxCsSalaire = 0.8185;
@@ -65,6 +68,10 @@ export default class Exercice {
     // Rémunération
     res.remuneration.net = this.remuneration;
     if (this.forme === "EURL") {
+      this.cotisations.caisseRetraite = this.caisseRetraite === 'CIPAV' 
+        ? new Cipav(res.remuneration.net) 
+        : new SSI(res.remuneration.net);
+
       this.cotisations.remuneration = res.remuneration.net;
       this.cotisations.accre = this.accre;
       res.remuneration.cs = this.cotisations;
@@ -72,7 +79,7 @@ export default class Exercice {
       res.remuneration.brut =
         res.remuneration.net + res.remuneration.cotisationsSociales;
       // https://www.urssaf.fr/portail/home/independant/mes-cotisations/quelles-cotisations/les-contributions-csg-crds/taux-de-la-csg-crds.html
-      res.IR.assiette -= this.cotisations.getCsgCrds() * this.tauxCsgDeductible;
+      res.IR.assiette -= this.cotisations.getCsgCrdsDeductible();
     }
     if (this.forme === "SASU") {
       res.remuneration.cs = undefined;

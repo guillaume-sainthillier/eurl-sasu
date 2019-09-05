@@ -24,6 +24,7 @@ class AppCtrl {
   public newStateName: string;
   public url;
   public formes = ["EURL", "SASU"];
+  public caissesRetraite = ["CIPAV", "SSI"];
 
   public states: Array<{ name: string; params: any }> = [];
   public currentState: any;
@@ -72,7 +73,8 @@ class AppCtrl {
       accre: { name: "ACCRE", notSlider: true, value: false },
       pfu: { name: 'Flat-Tax', notSlider: true, value: false },
       zfu: { name: 'ZFU', notSlider: true, value: false },
-      forme: { name: "Forme", notSlider: true, value: "SASU" }
+      forme: { name: "Forme", notSlider: true, value: "SASU" },
+      caisseRetraite: { name: "Retraite", notSlider: true, value: "CIPAV" },
     };
 
     this.loadStates();
@@ -209,6 +211,7 @@ class AppCtrl {
     this.exercice.nbParts = this.params.nbParts.value;
     this.exercice.nbMois = this.params.nbMois.value;
     this.exercice.forme = this.params.forme.value;
+    this.exercice.caisseRetraite = this.params.caisseRetraite.value;
     this.exercice.tauxCsgCrds = 0.172;
     this.exercice.tauxCsgDeductible = 0.068;
 
@@ -282,6 +285,26 @@ angular
         };
       }
     ]
+  })
+  .component("cotisation", {
+    bindings: {
+      montant: "<",
+      taux: "<",
+      assiette: "<"
+    },
+    template: `
+        <span class="cotisation">
+          {{ $ctrl.montant | currency:'€':2 }}
+          <span ng-if="$ctrl.taux === null">
+              (Forfaitaire)
+          </span>
+          <span ng-if="$ctrl.taux !== null">
+              ({{ $ctrl.taux | number:2 }} % x {{ $ctrl.assiette | currency:'€':2 }})
+          </span>
+          <span ng-transclude></span>
+        </span>
+    `,
+    transclude: true,
   })
   .directive("stringToNumber", function() {
     return {
