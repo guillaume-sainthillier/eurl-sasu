@@ -140,6 +140,18 @@
                                     />
                                 </div>
                             </div>
+                            <div class="row form-group" ng-if="ctrl.params.forme.value === 'EURL'">
+                                <label for="caisseRetraite" class="col-sm-2 col-form-label text-right">{{ ctrl.params.caisseRetraite.name | uppercase }}</label>
+                                <div class="col-md-8">
+                                    <select
+                                        ng-model="ctrl.params.caisseRetraite.value"
+                                        class="form-control"
+                                        ng-options="caisseRetraite as caisseRetraite for caisseRetraite in ctrl.caissesRetraite"
+                                        ng-change="ctrl.onChange()"
+                                    >
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-footer">
                             <div class="row">
@@ -315,18 +327,89 @@
                             doc="cotisationsRemu"
                         >{{ctrl.result.remuneration.cotisationsSociales | currency:'€':2}}</field>
                         <div ng-if="ctrl.result.remuneration.cs">
-                            <field label=" dont Maladie">{{ctrl.result.remuneration.cs.getMaladie() | currency:'€':2}}</field>
-                            <field label=" dont Allocations familiales">{{ctrl.result.remuneration.cs.getAllocationsFamiliales()
-                                | currency:'€':2}}</field>
-                            <field label=" dont Formation professionnelle">{{ctrl.result.remuneration.cs.getFormationProfessionnelle()
-                                | currency:'€':2}}</field>
-                            <field label=" dont Retraite base">{{ctrl.result.remuneration.cs.getRetraiteBase() |
-                                currency:'€':2}}</field>
-                            <field label=" dont Retraite complémentaire">{{ctrl.result.remuneration.cs.getRetraiteComplementaire()
-                                | currency:'€':2}}</field>
-                            <field label=" dont Invalidité/Décès">{{ctrl.result.remuneration.cs.getInvaliditeDeces() |
-                                currency:'€':2}}</field>
-                            <field label=" dont CSG/CRDS">{{ctrl.result.remuneration.cs.getCsgCrds() | currency:'€':2}}</field>
+                            <ul>
+                                <li>
+                                    <field label="Maladie">
+                                        <cotisation
+                                            montant="ctrl.result.remuneration.cs.getMaladie()"
+                                            taux="ctrl.result.remuneration.cs.getTauxMaladie()"
+                                            assiette="ctrl.result.remuneration.cs.getAssietteMaladie()"
+                                        ></cotisation>
+                                    </field>
+                                </li>
+                                <li>
+                                    <field label="Maladie 2 (Indémnités Journalières)">
+                                        <cotisation
+                                            montant="ctrl.result.remuneration.cs.getMaladie2()"
+                                            taux="ctrl.result.remuneration.cs.getTauxMaladie2()"
+                                            assiette="ctrl.result.remuneration.cs.getAssietteMaladie2()"
+                                        ></cotisation>
+                                    </field>
+                                </li>
+                                <li>
+                                    <field label="Retraite base">
+                                        <cotisation
+                                            montant="ctrl.result.remuneration.cs.caisseRetraite.getRetraiteBase()"
+                                            taux="ctrl.result.remuneration.cs.caisseRetraite.getTauxRetraiteBase()"
+                                            assiette="ctrl.result.remuneration.cs.caisseRetraite.getAssietteRetraiteBase()"
+                                        ></cotisation>                                      
+                                    </field>
+                                </li>
+                                <li>
+                                    <field label="Retraite complémentaire">
+                                        <cotisation
+                                            montant="ctrl.result.remuneration.cs.caisseRetraite.getRetraiteComplementaire()"
+                                            taux="ctrl.result.remuneration.cs.caisseRetraite.getTauxRetraiteComplementaire()"
+                                            assiette="ctrl.result.remuneration.cs.caisseRetraite.getAssietteRetraiteComplementaire()"
+                                        ></cotisation>
+                                    </field>
+                                </li>
+                                <li>
+                                    <field label="Invalidité - Décès">
+                                        <cotisation
+                                            montant="ctrl.result.remuneration.cs.caisseRetraite.getInvaliditeDeces()"
+                                            taux="ctrl.result.remuneration.cs.caisseRetraite.getTauxInvaliditeDeces()"
+                                            assiette="ctrl.result.remuneration.cs.caisseRetraite.getAssietteInvaliditeDeces()"
+                                        ></cotisation>
+                                    </field>
+                                </li>
+                                <li>
+                                    <field label="Allocations familiales">
+                                        <cotisation
+                                            montant="ctrl.result.remuneration.cs.getAllocationsFamiliales()"
+                                            taux="ctrl.result.remuneration.cs.getTauxAllocationsFamiliales()"
+                                            assiette="ctrl.result.remuneration.cs.getAssietteAllocationsFamiliales()"
+                                        ></cotisation>
+                                    </field>
+                                </li>
+                                <li>
+                                    <field label="Formation professionnelle">
+                                        <cotisation
+                                            montant="ctrl.result.remuneration.cs.getFormationProfessionnelle()"
+                                            taux="ctrl.result.remuneration.cs.getTauxFormationProfessionnelle()"
+                                            assiette="ctrl.result.remuneration.cs.getAssietteFormationProfessionnelle()"
+                                        ></cotisation>
+                                    </field>
+                                </li>
+                                <li>
+                                    <field label="CSG / CRDS déductible">
+                                        <cotisation
+                                            montant="ctrl.result.remuneration.cs.getCsgCrdsDeductible()"
+                                            taux="ctrl.result.remuneration.cs.getTauxCsgCrdsDeductible()"
+                                            assiette="ctrl.result.remuneration.cs.getAssietteCsgCrdsDeductible()"
+                                        ></cotisation>
+                                    </field>
+                                </li>
+                                <li>
+                                    <field label="CSG / CRDS non déductible">
+                                        <cotisation
+                                            montant="ctrl.result.remuneration.cs.getCsgCrdsNonDeductible()"
+                                            taux="ctrl.result.remuneration.cs.getTauxCsgCrdsNonDeductible()"
+                                            assiette="ctrl.result.remuneration.cs.getAssietteCsgCrdsNonDeductible()"
+                                        ></cotisation>
+                                    </field>
+                                </li>
+                            </ul>
                         </div>
                         <field
                             ng-if="ctrl.params.remuneration.value > 0"
