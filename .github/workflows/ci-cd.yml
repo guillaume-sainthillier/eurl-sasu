@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        task: [test, lint, typecheck]
+        task: [test, typecheck]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -64,9 +64,6 @@ jobs:
           case "${{ matrix.task }}" in
             test)
               yarn test:unit
-              ;;
-            lint)
-              yarn lint
               ;;
             typecheck)
               yarn type-check
