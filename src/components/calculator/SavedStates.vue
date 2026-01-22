@@ -105,35 +105,35 @@ function handleImport() {
       <div class="flex flex-wrap gap-2 mb-4">
         <button
           @click="openSaveDialog"
-          class="px-4 py-2 bg-transparent hover:bg-blue-50 text-blue-600 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 border border-blue-600"
+          class="px-4 py-2 bg-transparent hover:bg-gray-50 text-gray-800 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 border border-gray-800"
         >
-          <Save :size="16" />
+          <Save :size="16" class="text-blue-600" />
           Sauvegarder l'état actuel
         </button>
 
         <button
           v-if="savedStatesStore.savedStates.length > 0"
           @click="handleExport"
-          class="px-4 py-2 bg-transparent hover:bg-blue-50 text-blue-600 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 border border-blue-600"
+          class="px-4 py-2 bg-transparent hover:bg-gray-50 text-gray-800 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 border border-gray-800"
         >
-          <Download :size="16" />
+          <Download :size="16" class="text-blue-600" />
           Exporter tout
         </button>
 
         <button
           @click="showImportDialog = true"
-          class="px-4 py-2 bg-transparent hover:bg-blue-50 text-blue-600 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 border border-blue-600"
+          class="px-4 py-2 bg-transparent hover:bg-gray-50 text-gray-800 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 border border-gray-800"
         >
-          <Upload :size="16" />
+          <Upload :size="16" class="text-blue-600" />
           Importer
         </button>
 
         <button
           v-if="savedStatesStore.savedStates.length > 0"
           @click="savedStatesStore.clearAllStates()"
-          class="px-4 py-2 bg-transparent hover:bg-red-50 text-red-600 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 border border-red-600"
+          class="px-4 py-2 bg-transparent hover:bg-gray-50 text-gray-800 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 border border-gray-800"
         >
-          <Trash2 :size="16" />
+          <Trash2 :size="16" class="text-red-600" />
           Tout supprimer
         </button>
       </div>
