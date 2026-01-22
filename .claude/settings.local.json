@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__jetbrains__list_directory_tree",
+      "mcp__jetbrains__get_file_text_by_path",
+      "Bash(test:*)",
+      "Bash(npm install)",
+      "Bash(yarn install)",
+      "Bash(yarn add:*)",
+      "Bash(yarn test:unit:*)",
+      "Bash(yarn remove:*)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(yarn tailwindcss init:*)",
+      "Bash(yarn build:*)",
+      "Bash(yarn test)",
+      "Bash(yarn lint:*)",
+      "Bash(yarn type-check:*)"
+    ]
+  }
+}
