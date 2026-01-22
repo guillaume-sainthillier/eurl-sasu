@@ -14,6 +14,7 @@ const showImportDialog = ref(false)
 const saveName = ref('')
 const importData = ref('')
 const importError = ref('')
+const isDragging = ref(false)
 
 const hasLocalStorage = computed(() => savedStatesStore.hasLocalStorage())
 
@@ -75,7 +76,7 @@ function handleExport() {
 function handleImport() {
   importError.value = ''
   if (!importData.value.trim()) {
-    importError.value = 'Veuillez coller des données JSON valides'
+    importError.value = 'Veuillez coller des données JSON valides ou sélectionner un fichier'
     return
   }
 
@@ -86,6 +87,52 @@ function handleImport() {
   } else {
     importError.value = 'Format JSON invalide'
   }
+}
+
+function handleFileSelect(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+
+  if (file) {
+    processFile(file)
+  }
+}
+
+function handleDrop(event: DragEvent) {
+  event.preventDefault()
+  isDragging.value = false
+
+  const file = event.dataTransfer?.files[0]
+  if (file) {
+    processFile(file)
+  }
+}
+
+function handleDragOver(event: DragEvent) {
+  event.preventDefault()
+  isDragging.value = true
+}
+
+function handleDragLeave() {
+  isDragging.value = false
+}
+
+function processFile(file: File) {
+  if (!file.name.endsWith('.json')) {
+    importError.value = 'Veuillez sélectionner un fichier JSON (.json)'
+    return
+  }
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    const content = e.target?.result as string
+    importData.value = content
+    importError.value = ''
+  }
+  reader.onerror = () => {
+    importError.value = 'Erreur lors de la lecture du fichier'
+  }
+  reader.readAsText(file)
 }
 </script>
 
@@ -246,16 +293,55 @@ function handleImport() {
       <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Importer des sauvegardes</h3>
 
-        <label for="import-data-textarea" class="block text-sm font-medium text-gray-700 mb-2">
-          Collez le JSON exporté
-        </label>
-        <textarea
-          id="import-data-textarea"
-          v-model="importData"
-          rows="10"
-          placeholder='[{"name": "...", "year": 2018, ...}]'
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-xs"
-        ></textarea>
+        <!-- Drag & Drop Zone -->
+        <div
+          @drop="handleDrop"
+          @dragover="handleDragOver"
+          @dragleave="handleDragLeave"
+          class="mb-4 p-8 border-2 border-dashed rounded-lg transition-colors"
+          :class="isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'"
+        >
+          <div class="text-center">
+            <Upload :size="32" class="mx-auto mb-2 text-gray-400" />
+            <p class="text-sm font-medium text-gray-700 mb-1">
+              Glissez-déposez votre fichier JSON ici
+            </p>
+            <p class="text-xs text-gray-500 mb-3">ou</p>
+            <label
+              for="import-file-input"
+              class="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg cursor-pointer transition-colors text-sm font-medium"
+            >
+              Sélectionner un fichier
+            </label>
+            <input
+              id="import-file-input"
+              type="file"
+              accept=".json"
+              @change="handleFileSelect"
+              class="hidden"
+            />
+          </div>
+        </div>
+
+        <div class="relative flex items-center justify-center my-4">
+          <div class="border-t border-gray-300 flex-grow"></div>
+          <span class="px-3 text-xs text-gray-500 bg-white">OU</span>
+          <div class="border-t border-gray-300 flex-grow"></div>
+        </div>
+
+        <!-- Text Input Option -->
+        <div>
+          <label for="import-data-textarea" class="block text-sm font-medium text-gray-700 mb-2">
+            Coller le JSON exporté
+          </label>
+          <textarea
+            id="import-data-textarea"
+            v-model="importData"
+            rows="10"
+            placeholder='[{"name": "...", "year": 2018, ...}]'
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-xs"
+          ></textarea>
+        </div>
 
         <p v-if="importError" class="text-sm text-red-600 mt-2">{{ importError }}</p>
 
