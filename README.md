@@ -175,7 +175,7 @@ Coverage is available in `coverage/index.html` after running coverage tests.
 
 ## 🚢 Deployment
 
-The application is automatically deployed to GitHub Pages via GitHub Actions on every push to the `master` branch.
+The application is automatically deployed to GitHub Pages via GitHub Actions on every push to the `main` branch.
 
 ### Manual Deployment
 
@@ -191,8 +191,8 @@ yarn build
 The CI/CD pipeline:
 1. **Install**: Install dependencies with Yarn caching
 2. **Test**: Run tests, lint, and type-check in parallel
-3. **Build**: Build production bundle (only on master)
-4. **Deploy**: Deploy to GitHub Pages (only on master)
+3. **Build**: Build production bundle (only on main)
+4. **Deploy**: Deploy to GitHub Pages (only on main)
 
 ## 📖 How It Works
 
