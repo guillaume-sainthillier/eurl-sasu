@@ -41,7 +41,8 @@ export function useUrlState() {
 
     // Load year first
     const year = params.get('year')
-    if (year && (year === '2017' || year === '2018')) {
+    if (year) {
+      // setYear ignores years without a configuration
       calculatorStore.setYear(parseInt(year))
     }
 

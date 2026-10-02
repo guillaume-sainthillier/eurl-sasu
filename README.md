@@ -175,7 +175,7 @@ Coverage is available in `coverage/index.html` after running coverage tests.
 
 ## 🚢 Deployment
 
-The application is automatically deployed to GitHub Pages via GitHub Actions on every push to the `master` branch.
+The application is automatically deployed to GitHub Pages via GitHub Actions on every push to the `main` branch.
 
 ### Manual Deployment
 
@@ -191,8 +191,8 @@ yarn build
 The CI/CD pipeline:
 1. **Install**: Install dependencies with Yarn caching
 2. **Test**: Run tests, lint, and type-check in parallel
-3. **Build**: Build production bundle (only on master)
-4. **Deploy**: Deploy to GitHub Pages (only on master)
+3. **Build**: Build production bundle (only on main)
+4. **Deploy**: Deploy to GitHub Pages (only on main)
 
 ## 📖 How It Works
 
@@ -217,7 +217,7 @@ The CI/CD pipeline:
 
 **SASU (Société par Actions Simplifiée Unipersonnelle)**:
 - Président = Assimilé Salarié
-- Cotisations sociales ~82% du net sur la rémunération (~35% avec ACCRE)
+- Cotisations sociales ~82% du net sur la rémunération en 2018, ~89% en 2017 (~35% avec ACCRE)
 - Dividendes: 17.2% de prélèvements sociaux uniquement
 - Option PFU (Flat Tax 30%) possible en 2018+
 

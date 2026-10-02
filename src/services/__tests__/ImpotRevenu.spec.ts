@@ -9,11 +9,11 @@ describe('ImpotRevenu', () => {
       impotRevenu.nbParts = 2
       // Revenue per part: 75000 / 2 = 37500
       // Tranche 1: (9807 - 0) * 0 = 0
-      // Tranche 2: (27086 - 9808) * 0.14 = 2418.92
-      // Tranche 3: (37500 - 27087) * 0.3 = 3123.9
-      // Per part: 5542.82
-      // Total: 5542.82 * 2 = 11085.64
-      expect(impotRevenu.getImpot()).toBeCloseTo(11085.64, 2)
+      // Tranche 2: (27086 - 9807) * 0.14 = 2419.06
+      // Tranche 3: (37500 - 27086) * 0.3 = 3124.2
+      // Per part: 5543.26
+      // Total: 5543.26 * 2 = 11086.52
+      expect(impotRevenu.getImpot()).toBeCloseTo(11086.52, 2)
     })
 
     it('should compute IR correctly for single person (1 part)', () => {
@@ -21,10 +21,10 @@ describe('ImpotRevenu', () => {
       impotRevenu.revenu = 50000
       impotRevenu.nbParts = 1
       // Tranche 1: 0
-      // Tranche 2: (27086 - 9808) * 0.14 = 2418.92
-      // Tranche 3: (50000 - 27087) * 0.3 = 6873.9
-      // Total: 9292.82
-      expect(impotRevenu.getImpot()).toBeCloseTo(9292.82, 2)
+      // Tranche 2: (27086 - 9807) * 0.14 = 2419.06
+      // Tranche 3: (50000 - 27086) * 0.3 = 6874.2
+      // Total: 9293.26 (official formula: R * 0.30 - 5706.74)
+      expect(impotRevenu.getImpot()).toBeCloseTo(9293.26, 2)
     })
 
     it('should handle low income with no tax', () => {

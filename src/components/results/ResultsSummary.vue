@@ -93,9 +93,14 @@ const effectiveTaxRate = computed(() => {
 
             <!-- IR -->
             <div class="flex justify-between p-2 bg-gray-50 rounded">
-              <span class="text-gray-600">IR</span>
+              <span class="text-gray-600">
+                IR
+                <span v-if="result.IR.impotPFU > 0" class="text-xs text-gray-500">
+                  (hors PFU, déjà déduit des dividendes)
+                </span>
+              </span>
               <span class="font-mono font-semibold text-red-600">
-                -{{ formatCurrency(result.IR.impot) }}
+                -{{ formatCurrency(result.IR.impotBareme) }}
               </span>
             </div>
           </div>

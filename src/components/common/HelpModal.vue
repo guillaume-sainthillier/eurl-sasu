@@ -187,7 +187,7 @@ defineExpose({
                 <h4 class="font-medium text-gray-800">SASU (Société par Actions Simplifiée Unipersonnelle)</h4>
                 <ul class="list-disc list-inside text-gray-600 mt-1 space-y-1">
                   <li>Président = Assimilé Salarié</li>
-                  <li>Cotisations sociales ~82% du net sur la rémunération</li>
+                  <li>Cotisations sociales ~82% du net sur la rémunération (~89% en 2017)</li>
                   <li>Dividendes: 17.2% de prélèvements sociaux uniquement</li>
                   <li>Option PFU (Flat Tax 30%) possible en 2018+</li>
                 </ul>

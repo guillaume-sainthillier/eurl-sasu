@@ -1,8 +1,13 @@
 import CotisationsSociales from './CotisationsSociales'
+import CotisationsSociales2017 from './CotisationsSociales2017'
 import Cipav from './pension-funds/Cipav'
+import Cipav2017 from './pension-funds/Cipav2017'
 import SSI from './pension-funds/SSI'
 import ImpotRevenu from './ImpotRevenu'
 import ImpotSociete from './ImpotSociete'
+import type { PensionFundBase } from './pension-funds/PensionFundBase'
+import type { YearConfig } from '@/types/year-config.types'
+import { getDefaultYearConfig } from '@/config/years'
 
 export interface ExerciceParams {
   capital: number
@@ -53,8 +58,9 @@ export interface ExerciceResult {
   }
   IR: {
     assiette: number
-    impot: number
-    impotPFU: number
+    impot: number // Total: progressive scale + flat tax
+    impotBareme: number // Progressive scale only
+    impotPFU: number // Flat tax only (already deducted from dividendes.net)
     tranches: any[]
   }
   IS: {
@@ -72,30 +78,56 @@ export interface ExerciceResult {
 /**
  * Main Exercise Calculator
  * Orchestrates all tax calculations for EURL and SASU companies
- * Supports both 2017 and 2018 tax rules (configured via constants)
+ * Year-specific values (PASS, brackets, rates) come from the injected YearConfig
  */
 export default class ExerciceCalculator {
-  // These will be configurable per year in Phase 3
-  private PASS: number = 39732 // 2018 value
-  private tauxAccreCsSalaire = 0.35
-  private tauxCsSalaire = 0.8185
-  private plafondAccre = 39228
-  private plancherAccreLineaire = this.plafondAccre * 0.75
-  private tauxCsgCrds = 0.172
-  private tauxAbattementDividendes = 0.4 // 2018: 40%, 2017: 60%
-  private tauxCsgDeductible = 0.051
-  private tauxAbattementBnc = 0.34
-  private tauxAbattementFrais = 0.1
-  private tauxFlatTax = 0.3
+  private PASS: number
+  private tauxAccreCsSalaire: number
+  private tauxCsSalaire: number
+  private plancherAccreLineaire: number
+  private tauxCsgCrds: number
+  private tauxAbattementDividendes: number
+  private tauxCsgDeductible: number
+  private tauxAbattementBnc: number
+  private tauxAbattementFrais: number
+  private tauxFlatTax: number
 
   private impotSociete: ImpotSociete
   private cotisations: CotisationsSociales
   private impotRevenu: ImpotRevenu
 
-  constructor() {
-    this.impotSociete = new ImpotSociete()
-    this.cotisations = new CotisationsSociales()
-    this.impotRevenu = new ImpotRevenu()
+  constructor(private yearConfig: YearConfig = getDefaultYearConfig()) {
+    const { rates } = yearConfig
+    this.PASS = yearConfig.pass
+    this.tauxAccreCsSalaire = rates.tauxAccreCsSalaire
+    this.tauxCsSalaire = rates.tauxCsSalaire
+    this.plancherAccreLineaire = yearConfig.pass * 0.75
+    this.tauxCsgCrds = rates.tauxCsgCrds
+    this.tauxAbattementDividendes = rates.tauxAbattementDividendes
+    this.tauxCsgDeductible = rates.tauxCsgDeductible
+    this.tauxAbattementBnc = rates.tauxAbattementBnc
+    this.tauxAbattementFrais = rates.tauxAbattementFrais
+    this.tauxFlatTax = rates.tauxFlatTax
+
+    this.impotSociete = new ImpotSociete({ tranches: yearConfig.taxBrackets.is })
+    this.cotisations = this.isLegacy2017() ? new CotisationsSociales2017() : new CotisationsSociales()
+    this.impotRevenu = new ImpotRevenu({ tranches: yearConfig.taxBrackets.ir })
+  }
+
+  /**
+   * 2017 EURL contributions follow the CIPAV-only model of the original 2017 app
+   */
+  private isLegacy2017(): boolean {
+    return this.yearConfig.year <= 2017
+  }
+
+  private createCaisseRetraite(params: ExerciceParams, revenus: number): PensionFundBase {
+    if (this.isLegacy2017()) {
+      return new Cipav2017(revenus, this.PASS)
+    }
+    return params.caisseRetraite === 'CIPAV'
+      ? new Cipav(revenus, this.PASS)
+      : new SSI(revenus, this.PASS)
   }
 
   calculate(params: ExerciceParams): ExerciceResult {
@@ -121,6 +153,7 @@ export default class ExerciceCalculator {
       IR: {
         assiette: 0,
         impot: 0,
+        impotBareme: 0,
         impotPFU: 0,
         tranches: []
       },
@@ -136,19 +169,22 @@ export default class ExerciceCalculator {
       net: 0
     }
 
+    const { features } = this.yearConfig
+    const zfu = params.zfu && features.hasZfuExemption
+    const pfu = params.pfu && features.hasFlatTax
+
     res.IR.assiette = 0
     res.IS.assiette = 0
     res.dividendes.brut = params.dividendes
 
     // RÉMUNÉRATION
     res.remuneration.net = params.remuneration
+    // Non-deductible CSG/CRDS paid by the company is taxable income for the manager
+    let csgCrdsNonDeductible = 0
 
     if (params.forme === 'EURL') {
       // EURL: Self-employed social contributions
-      this.cotisations.caisseRetraite =
-        params.caisseRetraite === 'CIPAV'
-          ? new Cipav(res.remuneration.net, this.PASS)
-          : new SSI(res.remuneration.net, this.PASS)
+      this.cotisations.caisseRetraite = this.createCaisseRetraite(params, res.remuneration.net)
 
       this.cotisations.remuneration = res.remuneration.net
       this.cotisations.accre = params.accre
@@ -156,7 +192,7 @@ export default class ExerciceCalculator {
       res.remuneration.cs = this.cotisations
       res.remuneration.cotisationsSociales = this.cotisations.getCotisations()
       res.remuneration.brut = res.remuneration.net + res.remuneration.cotisationsSociales
-      res.IR.assiette -= this.cotisations.getCsgCrdsDeductible()
+      csgCrdsNonDeductible = this.cotisations.getCsgCrdsNonDeductible()
     }
 
     if (params.forme === 'SASU') {
@@ -169,7 +205,8 @@ export default class ExerciceCalculator {
       res.remuneration.brut = res.remuneration.net + res.remuneration.cotisationsSociales
     }
 
-    res.remuneration.assietteIR = res.remuneration.net * (1 - this.tauxAbattementFrais)
+    res.remuneration.assietteIR =
+      (res.remuneration.net + csgCrdsNonDeductible) * (1 - this.tauxAbattementFrais)
     res.IR.assiette += res.remuneration.assietteIR
 
     // IMPÔT SUR LES SOCIÉTÉS (IS)
@@ -181,7 +218,7 @@ export default class ExerciceCalculator {
     this.impotSociete.benefice = res.IS.assiette
     this.impotSociete.prorata = params.nbMois / 12 // Proratization
 
-    if (!params.zfu) {
+    if (!zfu) {
       res.IS.exonerations = 0
       res.IS.impot = this.impotSociete.getImpot()
     } else {
@@ -198,7 +235,7 @@ export default class ExerciceCalculator {
       if (params.forme === 'SASU') {
         res.dividendes.cotisationsSociales = res.dividendes.brut * this.tauxCsgCrds
 
-        if (!params.pfu) {
+        if (!pfu) {
           // Standard taxation (without flat tax)
           res.dividendes.net = res.dividendes.brut - res.dividendes.cotisationsSociales
           res.dividendes.assietteIR =
@@ -214,7 +251,7 @@ export default class ExerciceCalculator {
       } else {
         // EURL: Distinction between < 10% and > 10% of capital
         const dividendes10 = {
-          brut: params.capital * 0.1,
+          brut: Math.min(params.capital * 0.1, res.dividendes.brut),
           cotisationsSociales: 0,
           net: 0
         }
@@ -251,20 +288,21 @@ export default class ExerciceCalculator {
 
     this.impotRevenu.revenu = res.IR.assiette
     this.impotRevenu.nbParts = params.nbParts
-    res.IR.impot = this.impotRevenu.getImpot() + res.IR.impotPFU
+    res.IR.impotBareme = this.impotRevenu.getImpot()
+    res.IR.impot = res.IR.impotBareme + res.IR.impotPFU
     res.IR.tranches = this.impotRevenu.getTranches()
 
     // FINAL CALCULATIONS
     res.brut =
       res.societe.ca - res.societe.charges - res.societe.reste + params.autresRevenus + params.bnc
 
+    // The flat tax is already deducted from dividendes.net
     res.net =
       res.remuneration.net +
       res.dividendes.net +
       params.autresRevenus +
       params.bnc -
-      res.IR.impot +
-      res.IR.impotPFU
+      res.IR.impotBareme
 
     return res
   }
