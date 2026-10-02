@@ -1,13 +1,13 @@
+import { getDefaultYearConfig } from '@/config/years'
+import type { YearConfig } from '@/types/year-config.types'
 import CotisationsSociales from './CotisationsSociales'
 import CotisationsSociales2017 from './CotisationsSociales2017'
-import Cipav from './pension-funds/Cipav'
-import Cipav2017 from './pension-funds/Cipav2017'
-import SSI from './pension-funds/SSI'
 import ImpotRevenu from './ImpotRevenu'
 import ImpotSociete from './ImpotSociete'
+import Cipav from './pension-funds/Cipav'
+import Cipav2017 from './pension-funds/Cipav2017'
 import type { PensionFundBase } from './pension-funds/PensionFundBase'
-import type { YearConfig } from '@/types/year-config.types'
-import { getDefaultYearConfig } from '@/config/years'
+import SSI from './pension-funds/SSI'
 
 export interface ExerciceParams {
   capital: number
@@ -117,7 +117,9 @@ export default class ExerciceCalculator {
     this.tauxFlatTax = rates.tauxFlatTax
 
     this.impotSociete = new ImpotSociete({ tranches: yearConfig.taxBrackets.is })
-    this.cotisations = this.isLegacy2017() ? new CotisationsSociales2017() : new CotisationsSociales()
+    this.cotisations = this.isLegacy2017()
+      ? new CotisationsSociales2017()
+      : new CotisationsSociales()
     this.impotRevenu = new ImpotRevenu({ tranches: yearConfig.taxBrackets.ir })
   }
 

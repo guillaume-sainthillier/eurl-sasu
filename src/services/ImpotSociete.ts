@@ -31,11 +31,12 @@ export default class ImpotSociete {
 
   getBaseTranches(): Tranche[] {
     return this.config.tranches.map(
-      (t) => new Tranche(
-        t.min === 0 ? 0 : t.min * this.prorata,
-        t.max === null ? null : t.max * this.prorata,
-        t.taux
-      )
+      (t) =>
+        new Tranche(
+          t.min === 0 ? 0 : t.min * this.prorata,
+          t.max === null ? null : t.max * this.prorata,
+          t.taux
+        )
     )
   }
 

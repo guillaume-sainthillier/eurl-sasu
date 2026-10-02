@@ -1,0 +1,7 @@
+# Style-only commits, skipped by git blame (GitHub reads this file automatically;
+# locally: git config blame.ignoreRevsFile .git-blame-ignore-revs).
+
+# style: normalize line endings to LF
+448012232a3acdd80530508850fabe278b02e0e8
+# style: format with Biome
+19a17fe7ec1b8621f044842e2e4f18b30d2b7514

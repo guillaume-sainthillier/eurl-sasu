@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useCalculation } from '@/composables/useCalculation'
 import type { ExerciceResult } from '@/services/ExerciceCalculator'
 import { formatCurrency } from '@/utils/formatters'
-import { useCalculation } from '@/composables/useCalculation'
 
 interface Props {
   result: ExerciceResult

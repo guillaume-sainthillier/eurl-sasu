@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import YearSelector from '../calculator/YearSelector.vue'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { useCalculatorStore } from '@/stores/calculator'
+import YearSelector from '../calculator/YearSelector.vue'
 
 describe('YearSelector.vue', () => {
   beforeEach(() => {

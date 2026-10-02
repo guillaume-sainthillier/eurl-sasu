@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { describe, expect, it } from 'vitest'
 import InputSlider from '../calculator/InputSlider.vue'
 
 describe('InputSlider.vue', () => {
@@ -60,7 +60,7 @@ describe('InputSlider.vue', () => {
   it('displays formatted currency value', () => {
     const wrapper = mount(InputSlider, {
       props: {
-        label: 'Chiffre d\'affaires',
+        label: "Chiffre d'affaires",
         modelValue: 50000,
         min: 0,
         max: 200000,

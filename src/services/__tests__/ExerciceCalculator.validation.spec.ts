@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest'
-import ExerciceCalculator from '../ExerciceCalculator'
+import { describe, expect, it } from 'vitest'
 import type { ExerciceParams } from '../ExerciceCalculator'
+import ExerciceCalculator from '../ExerciceCalculator'
 
 /**
  * Comprehensive validation tests to ensure calculations match original apps
@@ -171,9 +171,7 @@ describe('ExerciceCalculator - Validation Tests', () => {
       const result = calculator.calculate(params)
 
       // SASU should have higher social contributions than EURL (~82% vs ~45%)
-      expect(result.remuneration.cotisationsSociales).toBeGreaterThan(
-        params.remuneration * 0.7
-      )
+      expect(result.remuneration.cotisationsSociales).toBeGreaterThan(params.remuneration * 0.7)
     })
 
     it('should calculate correctly for SASU with dividends', () => {

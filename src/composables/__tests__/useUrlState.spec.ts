@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { setActivePinia, createPinia } from 'pinia'
-import { useUrlState } from '../useUrlState'
+import { createPinia, setActivePinia } from 'pinia'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { useCalculatorStore } from '@/stores/calculator'
+import { useUrlState } from '../useUrlState'
 
 function setSearch(search: string) {
   window.history.replaceState({}, '', `/${search}`)
