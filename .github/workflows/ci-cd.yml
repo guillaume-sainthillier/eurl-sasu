@@ -17,34 +17,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Job 1: Install dependencies
-  install:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'yarn'
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Cache node_modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
-
-  # Job 2: Run tests and linting in parallel
+  # Job 1: Run tests and linting in parallel
   test:
-    needs: install
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -59,12 +33,6 @@ jobs:
         with:
           node-version: '22'
           cache: 'yarn'
-
-      - name: Restore node_modules cache
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -83,7 +51,7 @@ jobs:
               ;;
           esac
 
-  # Job 3: Build production bundle
+  # Job 2: Build production bundle
   build:
     needs: test
     runs-on: ubuntu-latest
@@ -99,12 +67,6 @@ jobs:
           node-version: '22'
           cache: 'yarn'
 
-      - name: Restore node_modules cache
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
@@ -118,7 +80,7 @@ jobs:
           path: dist/
           retention-days: 1
 
-  # Job 4: Deploy to GitHub Pages
+  # Job 3: Deploy to GitHub Pages
   deploy:
     needs: build
     runs-on: ubuntu-latest
