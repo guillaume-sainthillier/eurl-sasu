@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useCalculation } from '@/composables/useCalculation'
 import { formatCurrency } from '@/utils/formatters'
+import { ChevronDown } from 'lucide-vue-next'
 import RemunerationDetails from './RemunerationDetails.vue'
 import DividendesDetails from './DividendesDetails.vue'
 import ImpotSocieteDetails from './ImpotSocieteDetails.vue'
@@ -108,16 +109,24 @@ const effectiveTaxRate = computed(() => {
 
         <!-- Toggle Details Button -->
         <button
+          type="button"
+          class="btn btn-secondary w-full mt-4"
+          :aria-expanded="showDetailedBreakdown"
+          aria-controls="detailed-breakdown"
           @click="showDetailedBreakdown = !showDetailedBreakdown"
-          class="w-full mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
         >
           {{ showDetailedBreakdown ? 'Masquer' : 'Afficher' }} le détail complet
+          <ChevronDown
+            :size="16"
+            class="transition-transform duration-150 motion-reduce:transition-none"
+            :class="{ 'rotate-180': showDetailedBreakdown }"
+          />
         </button>
       </div>
     </div>
 
     <!-- Detailed Breakdown Components -->
-    <div v-if="result && showDetailedBreakdown" class="space-y-6">
+    <div v-if="result && showDetailedBreakdown" id="detailed-breakdown" class="space-y-6">
       <RemunerationDetails
         :result="result"
         :forme="(params.forme.value as string) as 'EURL' | 'SASU'"

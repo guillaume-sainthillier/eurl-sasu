@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useUrlState } from '@/composables/useUrlState'
+import { Check, Copy, Link } from 'lucide-vue-next'
+import BaseModal from '../common/BaseModal.vue'
 
 const { encodeStateToUrl, copyShareableLink } = useUrlState()
 
@@ -28,55 +30,47 @@ async function handleCopy() {
 <template>
   <div>
     <!-- Share Button -->
-    <button
-      @click="openShareDialog"
-      class="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium"
-    >
-      🔗 Partager un lien
+    <button type="button" class="btn btn-secondary w-full" @click="openShareDialog">
+      <Link :size="16" />
+      Partager un lien
     </button>
 
     <!-- Share Dialog -->
-    <div
-      v-if="showDialog"
-      class="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
-      @click.self="showDialog = false"
-    >
-      <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Partager ce calcul</h3>
+    <BaseModal :open="showDialog" title="Partager ce calcul" size="2xl" @close="showDialog = false">
+      <label for="share-url-input" class="block text-sm text-gray-600 mb-2">
+        Copiez ce lien pour partager votre configuration actuelle :
+      </label>
 
-        <p class="text-sm text-gray-600 mb-4">
-          Copiez ce lien pour partager votre configuration actuelle :
-        </p>
-
-        <div class="flex gap-2 mb-4">
-          <input
-            :value="shareUrl"
-            readonly
-            class="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm font-mono"
-            @focus="($event.target as HTMLInputElement).select()"
-          />
-          <button
-            @click="handleCopy"
-            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors whitespace-nowrap"
-            :class="{ 'bg-green-600 hover:bg-green-600': copied }"
-          >
-            {{ copied ? '✓ Copié !' : '📋 Copier' }}
-          </button>
-        </div>
-
-        <p class="text-xs text-gray-500 mb-4">
-          Le lien contient tous vos paramètres actuels (année, CA, charges, rémunération, etc.)
-        </p>
-
-        <div class="flex justify-end">
-          <button
-            @click="showDialog = false"
-            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
-          >
-            Fermer
-          </button>
-        </div>
+      <div class="flex gap-2">
+        <input
+          id="share-url-input"
+          :value="shareUrl"
+          readonly
+          class="form-control flex-1 text-sm font-mono"
+          @focus="($event.target as HTMLInputElement).select()"
+        />
+        <button
+          type="button"
+          class="btn whitespace-nowrap"
+          :class="copied ? 'btn-success' : 'btn-primary'"
+          @click="handleCopy"
+        >
+          <Check v-if="copied" :size="16" />
+          <Copy v-else :size="16" />
+          {{ copied ? 'Copié !' : 'Copier' }}
+        </button>
       </div>
-    </div>
+      <p class="sr-only" aria-live="polite">{{ copied ? 'Lien copié dans le presse-papiers' : '' }}</p>
+
+      <p class="text-xs text-gray-500 mt-3">
+        Le lien contient tous vos paramètres actuels (année, CA, charges, rémunération, etc.)
+      </p>
+
+      <template #footer>
+        <button type="button" class="btn btn-secondary ml-auto" @click="showDialog = false">
+          Fermer
+        </button>
+      </template>
+    </BaseModal>
   </div>
 </template>
