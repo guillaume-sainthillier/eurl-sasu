@@ -127,7 +127,9 @@ export default class CotisationsSociales {
       this.caisseRetraite.getRetraiteBase() +
       this.caisseRetraite.getRetraiteComplementaire() +
       this.caisseRetraite.getInvaliditeDeces() +
-      this.getAllocationsFamiliales()
+      this.getAllocationsFamiliales() -
+      // Waived contributions are not paid, so they are not added back
+      this.getExonerationAccre()
     )
   }
 
@@ -165,11 +167,44 @@ export default class CotisationsSociales {
 
   // ACCRE
   /**
+   * Share (0 to 1) of the eligible contributions waived by the ACCRE:
+   * total up to 75% of the PASS, then decreasing linearly to 0 at 100% of the PASS
+   */
+  getTauxExonerationAccre(): number {
+    if (!this.accre) {
+      return 0
+    }
+
+    const revenu = this._revenuPro()
+    const plafondExonerationTotale = (75 * this.PASS) / 100
+    if (revenu <= plafondExonerationTotale) {
+      return 1
+    }
+    if (revenu >= this.PASS) {
+      return 0
+    }
+
+    return (this.PASS - revenu) / (this.PASS - plafondExonerationTotale)
+  }
+
+  /**
    * Amount (in €) of contributions waived by the ACCRE, subtracted from the total.
-   * Not modelled for this contribution model yet.
+   * Covers health, family allowances, basic pension and disability/death;
+   * CSG/CRDS, supplementary pension, training and daily allowances remain due.
    */
   getExonerationAccre(): number {
-    return 0
+    const taux = this.getTauxExonerationAccre()
+    if (taux === 0) {
+      return 0
+    }
+
+    return (
+      taux *
+      (this.getMaladie() +
+        this.getAllocationsFamiliales() +
+        this.caisseRetraite.getRetraiteBase() +
+        this.caisseRetraite.getInvaliditeDeces())
+    )
   }
 
   // TOTAL COTISATIONS

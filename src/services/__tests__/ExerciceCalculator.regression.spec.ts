@@ -185,3 +185,73 @@ describe('CSG/CRDS', () => {
     expect(sasu.dividendes.assietteIR).toBeCloseTo(5490, 2)
   })
 })
+
+describe('EURL ACCRE (2018)', () => {
+  const PASS = year2018.pass
+  const eurl = (remuneration: number, accre: boolean, caisseRetraite: 'CIPAV' | 'SSI' = 'SSI') =>
+    new ExerciceCalculator(year2018).calculate({
+      ...baseParams,
+      forme: 'EURL',
+      dividendes: 0,
+      remuneration,
+      accre,
+      caisseRetraite
+    })
+
+  it.each(['CIPAV', 'SSI'] as const)(
+    'waives health, family, basic pension and disability below 75%% of the PASS (%s)',
+    (caisse) => {
+      const cs = eurl(20000, true, caisse).remuneration.cs!
+      expect(cs.getTauxExonerationAccre()).toBe(1)
+      expect(cs.getExonerationAccre()).toBeCloseTo(
+        cs.getMaladie() +
+          cs.getAllocationsFamiliales() +
+          cs.caisseRetraite.getRetraiteBase() +
+          cs.caisseRetraite.getInvaliditeDeces(),
+        2
+      )
+    }
+  )
+
+  it('keeps CSG/CRDS, supplementary pension, training and daily allowances due', () => {
+    const result = eurl(20000, true)
+    const cs = result.remuneration.cs!
+    expect(result.remuneration.cotisationsSociales).toBeCloseTo(
+      cs.getMaladie2() +
+        cs.getFormationProfessionnelle() +
+        cs.caisseRetraite.getRetraiteComplementaire() +
+        cs.getCsgCrds(),
+      2
+    )
+  })
+
+  it('does not add waived contributions to the CSG/CRDS base', () => {
+    const cs = eurl(20000, true).remuneration.cs!
+    expect(cs.getAssietteCsgCrds()).toBeCloseTo(
+      20000 + cs.getMaladie2() + cs.caisseRetraite.getRetraiteComplementaire(),
+      2
+    )
+  })
+
+  it('halves the exemption at 87.5% of the PASS', () => {
+    const cs = eurl(PASS * 0.875, true).remuneration.cs!
+    expect(cs.getTauxExonerationAccre()).toBeCloseTo(0.5, 6)
+  })
+
+  it('is continuous at 75% of the PASS', () => {
+    const below = eurl(PASS * 0.75, true).remuneration.cotisationsSociales
+    const above = eurl(PASS * 0.75 + 1, true).remuneration.cotisationsSociales
+    expect(Math.abs(above - below)).toBeLessThan(5)
+  })
+
+  it.each([PASS, 60000])('has no effect at or above the PASS (%d€)', (remuneration) => {
+    expect(eurl(remuneration, true).remuneration.cotisationsSociales).toBeCloseTo(
+      eurl(remuneration, false).remuneration.cotisationsSociales,
+      2
+    )
+  })
+
+  it('has no effect when ACCRE is not selected', () => {
+    expect(eurl(20000, false).remuneration.cs!.getExonerationAccre()).toBe(0)
+  })
+})
