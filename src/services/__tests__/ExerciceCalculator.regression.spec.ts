@@ -154,3 +154,34 @@ describe('Flat tax (PFU)', () => {
     expect(result.net).toBeCloseTo(34592.98, 2)
   })
 })
+
+describe('CSG/CRDS', () => {
+  const eurl = new ExerciceCalculator(year2018).calculate({
+    ...baseParams,
+    forme: 'EURL',
+    dividendes: 0
+  })
+  const cs = eurl.remuneration.cs!
+
+  it('splits EURL CSG/CRDS into 6.8% deductible and 2.9% non-deductible', () => {
+    expect(cs.getCsgCrdsDeductible()).toBeCloseTo((cs.getAssietteCsgCrds() * 6.8) / 100, 2)
+    expect(cs.getCsgCrdsNonDeductible()).toBeCloseTo((cs.getAssietteCsgCrds() * 2.9) / 100, 2)
+  })
+
+  it('adds the non-deductible CSG/CRDS to the EURL manager taxable income', () => {
+    const expected = (30000 + cs.getCsgCrdsNonDeductible()) * 0.9
+    expect(eurl.remuneration.assietteIR).toBeCloseTo(expected, 2)
+    expect(eurl.IR.assiette).toBeCloseTo(expected, 2)
+  })
+
+  it('deducts 6.8% CSG from 2018 dividends taxed at the progressive scale', () => {
+    const sasu = new ExerciceCalculator(year2018).calculate(baseParams)
+    // 10000 * (1 - 40%) - 10000 * 6.8%
+    expect(sasu.dividendes.assietteIR).toBeCloseTo(5320, 2)
+  })
+
+  it('still deducts 5.1% CSG from 2017 dividends', () => {
+    const sasu = new ExerciceCalculator(year2017).calculate(baseParams)
+    expect(sasu.dividendes.assietteIR).toBeCloseTo(5490, 2)
+  })
+})

@@ -143,7 +143,8 @@ export default class CotisationsSociales {
   }
 
   getTauxCsgCrdsDeductible(): number {
-    return 2.9
+    // CSG déductible
+    return 6.8
   }
 
   // CSG CRDS NON DEDUCTIBLE
@@ -158,7 +159,8 @@ export default class CotisationsSociales {
   }
 
   getTauxCsgCrdsNonDeductible(): number {
-    return 6.8
+    // CSG non déductible (2.4%) + CRDS (0.5%)
+    return 2.9
   }
 
   // TOTAL COTISATIONS

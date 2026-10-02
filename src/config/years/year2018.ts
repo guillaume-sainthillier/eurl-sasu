@@ -33,7 +33,7 @@ export const year2018: YearConfig = {
 
   rates: {
     tauxCsgCrds: 0.172, // 17.2% CSG/CRDS
-    tauxCsgDeductible: 0.051, // 5.1% CSG deductible
+    tauxCsgDeductible: 0.068, // 6.8% CSG deductible (5.1% until 2017)
     tauxAbattementDividendes: 0.4, // 40% dividend abatement
     tauxAbattementFrais: 0.1, // 10% professional expenses abatement
     tauxAbattementBnc: 0.34, // 34% BNC abatement

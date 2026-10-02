@@ -177,11 +177,15 @@ const showCotisationsDetail = computed(() => {
           <div class="font-mono text-right">
             {{ formatCurrency(result.remuneration.cs!.getAssietteCsgCrds()) }}
           </div>
-          <div class="text-gray-600">Déductible (6.8%) :</div>
+          <div class="text-gray-600">
+            Déductible ({{ formatPercent(result.remuneration.cs!.getTauxCsgCrdsDeductible()) }}) :
+          </div>
           <div class="font-mono text-right">
             {{ formatCurrency(result.remuneration.cs!.getCsgCrdsDeductible()) }}
           </div>
-          <div class="text-gray-600">Non déductible (2.9%) :</div>
+          <div class="text-gray-600">
+            Non déductible ({{ formatPercent(result.remuneration.cs!.getTauxCsgCrdsNonDeductible()) }}) :
+          </div>
           <div class="font-mono text-right">
             {{ formatCurrency(result.remuneration.cs!.getCsgCrdsNonDeductible()) }}
           </div>

@@ -160,6 +160,8 @@ export default class ExerciceCalculator {
 
     // RÉMUNÉRATION
     res.remuneration.net = params.remuneration
+    // Non-deductible CSG/CRDS paid by the company is taxable income for the manager
+    let csgCrdsNonDeductible = 0
 
     if (params.forme === 'EURL') {
       // EURL: Self-employed social contributions
@@ -174,7 +176,7 @@ export default class ExerciceCalculator {
       res.remuneration.cs = this.cotisations
       res.remuneration.cotisationsSociales = this.cotisations.getCotisations()
       res.remuneration.brut = res.remuneration.net + res.remuneration.cotisationsSociales
-      res.IR.assiette -= this.cotisations.getCsgCrdsDeductible()
+      csgCrdsNonDeductible = this.cotisations.getCsgCrdsNonDeductible()
     }
 
     if (params.forme === 'SASU') {
@@ -187,7 +189,8 @@ export default class ExerciceCalculator {
       res.remuneration.brut = res.remuneration.net + res.remuneration.cotisationsSociales
     }
 
-    res.remuneration.assietteIR = res.remuneration.net * (1 - this.tauxAbattementFrais)
+    res.remuneration.assietteIR =
+      (res.remuneration.net + csgCrdsNonDeductible) * (1 - this.tauxAbattementFrais)
     res.IR.assiette += res.remuneration.assietteIR
 
     // IMPÔT SUR LES SOCIÉTÉS (IS)
