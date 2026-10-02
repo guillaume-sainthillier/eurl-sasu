@@ -4,6 +4,23 @@ import type { SavedState } from '@/types/calculator.types'
 
 const STORAGE_KEY = 'eurl-sasu-saved-states'
 
+function isSavedState(value: unknown): value is SavedState {
+  if (typeof value !== 'object' || value === null) {
+    return false
+  }
+  const state = value as Record<string, unknown>
+  return (
+    typeof state.name === 'string' &&
+    typeof state.year === 'number' &&
+    typeof state.savedAt === 'number' &&
+    typeof state.params === 'object' &&
+    state.params !== null &&
+    Object.values(state.params).every(
+      (param) => typeof param === 'object' && param !== null && 'value' in param
+    )
+  )
+}
+
 export const useSavedStatesStore = defineStore('savedStates', () => {
   // State
   const savedStates = ref<SavedState[]>([])
@@ -112,14 +129,14 @@ export const useSavedStatesStore = defineStore('savedStates', () => {
 
   function importStates(jsonData: string): boolean {
     try {
-      const imported = JSON.parse(jsonData) as SavedState[]
-      // Validate the structure
-      if (Array.isArray(imported)) {
-        savedStates.value = imported
-        persistStates()
-        return true
+      const imported: unknown = JSON.parse(jsonData)
+      // Validate the structure: every entry must be loadable later on
+      if (!Array.isArray(imported) || !imported.every(isSavedState)) {
+        return false
       }
-      return false
+      savedStates.value = imported
+      persistStates()
+      return true
     } catch (error) {
       console.error('Error importing states:', error)
       return false

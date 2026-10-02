@@ -18,10 +18,10 @@ export default class ImpotRevenu {
     const defaultConfig: ImpotRevenuConfig = {
       tranches: [
         { min: 0, max: 9807, taux: 0 },
-        { min: 9808, max: 27086, taux: 0.14 },
-        { min: 27087, max: 72617, taux: 0.3 },
-        { min: 72618, max: 153783, taux: 0.41 },
-        { min: 153784, max: null, taux: 0.45 }
+        { min: 9807, max: 27086, taux: 0.14 },
+        { min: 27086, max: 72617, taux: 0.3 },
+        { min: 72617, max: 153783, taux: 0.41 },
+        { min: 153783, max: null, taux: 0.45 }
       ]
     }
 

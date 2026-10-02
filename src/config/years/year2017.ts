@@ -12,31 +12,32 @@ export const year2017: YearConfig = {
   pass: 39228,
 
   taxBrackets: {
-    // Income tax (Impôt sur le Revenu)
+    // Income tax (Impôt sur le Revenu) - barème 2017 (revenus 2016)
+    // Brackets must be contiguous: each min equals the previous max
     ir: [
-      { min: 0, max: 9700, taux: 0 },
-      { min: 9701, max: 26818, taux: 0.14 },
-      { min: 26819, max: 71898, taux: 0.3 },
-      { min: 71899, max: 152260, taux: 0.41 },
-      { min: 152261, max: null, taux: 0.45 }
+      { min: 0, max: 9710, taux: 0 },
+      { min: 9710, max: 26818, taux: 0.14 },
+      { min: 26818, max: 71898, taux: 0.3 },
+      { min: 71898, max: 152260, taux: 0.41 },
+      { min: 152260, max: null, taux: 0.45 }
     ],
 
-    // Corporate tax (Impôt sur les Sociétés)
+    // Corporate tax (Impôt sur les Sociétés) - 28% for SME profits up to 75,000€
     is: [
       { min: 0, max: 38120, taux: 0.15 },
-      { min: 38120, max: 75000, taux: 0.333 },
+      { min: 38120, max: 75000, taux: 0.28 },
       { min: 75000, max: null, taux: 0.333 }
     ]
   },
 
   rates: {
-    tauxCsgCrds: 0.172, // 17.2% CSG/CRDS
+    tauxCsgCrds: 0.155, // 15.5% prélèvements sociaux (17.2% from 2018)
     tauxCsgDeductible: 0.051, // 5.1% CSG deductible
-    tauxAbattementDividendes: 0.6, // 60% dividend abatement (2017)
+    tauxAbattementDividendes: 0.4, // 40% dividend abatement
     tauxAbattementFrais: 0.1, // 10% professional expenses abatement
     tauxAbattementBnc: 0.34, // 34% BNC abatement
     tauxFlatTax: 0, // No flat tax in 2017
-    tauxCsSalaire: 0.8185, // SASU employee contributions (~82%)
+    tauxCsSalaire: 0.89, // SASU employee contributions (~89%)
     tauxAccreCsSalaire: 0.35 // SASU with ACCRE (~35%)
   },
 

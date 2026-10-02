@@ -3,6 +3,8 @@ import Cipav from './pension-funds/Cipav'
 import SSI from './pension-funds/SSI'
 import ImpotRevenu from './ImpotRevenu'
 import ImpotSociete from './ImpotSociete'
+import type { YearConfig } from '@/types/year-config.types'
+import { getDefaultYearConfig } from '@/config/years'
 
 export interface ExerciceParams {
   capital: number
@@ -72,30 +74,40 @@ export interface ExerciceResult {
 /**
  * Main Exercise Calculator
  * Orchestrates all tax calculations for EURL and SASU companies
- * Supports both 2017 and 2018 tax rules (configured via constants)
+ * Year-specific values (PASS, brackets, rates) come from the injected YearConfig
  */
 export default class ExerciceCalculator {
-  // These will be configurable per year in Phase 3
-  private PASS: number = 39732 // 2018 value
-  private tauxAccreCsSalaire = 0.35
-  private tauxCsSalaire = 0.8185
-  private plafondAccre = 39228
-  private plancherAccreLineaire = this.plafondAccre * 0.75
-  private tauxCsgCrds = 0.172
-  private tauxAbattementDividendes = 0.4 // 2018: 40%, 2017: 60%
-  private tauxCsgDeductible = 0.051
-  private tauxAbattementBnc = 0.34
-  private tauxAbattementFrais = 0.1
-  private tauxFlatTax = 0.3
+  private PASS: number
+  private tauxAccreCsSalaire: number
+  private tauxCsSalaire: number
+  private plancherAccreLineaire: number
+  private tauxCsgCrds: number
+  private tauxAbattementDividendes: number
+  private tauxCsgDeductible: number
+  private tauxAbattementBnc: number
+  private tauxAbattementFrais: number
+  private tauxFlatTax: number
 
   private impotSociete: ImpotSociete
   private cotisations: CotisationsSociales
   private impotRevenu: ImpotRevenu
 
-  constructor() {
-    this.impotSociete = new ImpotSociete()
+  constructor(private yearConfig: YearConfig = getDefaultYearConfig()) {
+    const { rates } = yearConfig
+    this.PASS = yearConfig.pass
+    this.tauxAccreCsSalaire = rates.tauxAccreCsSalaire
+    this.tauxCsSalaire = rates.tauxCsSalaire
+    this.plancherAccreLineaire = yearConfig.pass * 0.75
+    this.tauxCsgCrds = rates.tauxCsgCrds
+    this.tauxAbattementDividendes = rates.tauxAbattementDividendes
+    this.tauxCsgDeductible = rates.tauxCsgDeductible
+    this.tauxAbattementBnc = rates.tauxAbattementBnc
+    this.tauxAbattementFrais = rates.tauxAbattementFrais
+    this.tauxFlatTax = rates.tauxFlatTax
+
+    this.impotSociete = new ImpotSociete({ tranches: yearConfig.taxBrackets.is })
     this.cotisations = new CotisationsSociales()
-    this.impotRevenu = new ImpotRevenu()
+    this.impotRevenu = new ImpotRevenu({ tranches: yearConfig.taxBrackets.ir })
   }
 
   calculate(params: ExerciceParams): ExerciceResult {
@@ -135,6 +147,10 @@ export default class ExerciceCalculator {
       brut: 0,
       net: 0
     }
+
+    const { features } = this.yearConfig
+    const zfu = params.zfu && features.hasZfuExemption
+    const pfu = params.pfu && features.hasFlatTax
 
     res.IR.assiette = 0
     res.IS.assiette = 0
@@ -181,7 +197,7 @@ export default class ExerciceCalculator {
     this.impotSociete.benefice = res.IS.assiette
     this.impotSociete.prorata = params.nbMois / 12 // Proratization
 
-    if (!params.zfu) {
+    if (!zfu) {
       res.IS.exonerations = 0
       res.IS.impot = this.impotSociete.getImpot()
     } else {
@@ -198,7 +214,7 @@ export default class ExerciceCalculator {
       if (params.forme === 'SASU') {
         res.dividendes.cotisationsSociales = res.dividendes.brut * this.tauxCsgCrds
 
-        if (!params.pfu) {
+        if (!pfu) {
           // Standard taxation (without flat tax)
           res.dividendes.net = res.dividendes.brut - res.dividendes.cotisationsSociales
           res.dividendes.assietteIR =
@@ -214,7 +230,7 @@ export default class ExerciceCalculator {
       } else {
         // EURL: Distinction between < 10% and > 10% of capital
         const dividendes10 = {
-          brut: params.capital * 0.1,
+          brut: Math.min(params.capital * 0.1, res.dividendes.brut),
           cotisationsSociales: 0,
           net: 0
         }

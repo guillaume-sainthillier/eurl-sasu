@@ -73,8 +73,8 @@ describe('Year Configuration System', () => {
       expect(year2017.taxBrackets.is[1].max).toBe(75000)
     })
 
-    it('should have 60% dividend abatement', () => {
-      expect(year2017.rates.tauxAbattementDividendes).toBe(0.6)
+    it('should have 40% dividend abatement', () => {
+      expect(year2017.rates.tauxAbattementDividendes).toBe(0.4)
     })
 
     it('should not have pension fund selection', () => {

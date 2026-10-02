@@ -64,7 +64,7 @@ export const useCalculatorStore = defineStore('calculator', () => {
 
   const calculationResult = computed<ExerciceResult | null>(() => {
     try {
-      const calculator = new ExerciceCalculator()
+      const calculator = new ExerciceCalculator(yearConfig.value ?? getDefaultYearConfig())
       return calculator.calculate(calculationParams.value)
     } catch (error) {
       console.error('Calculation error:', error)
@@ -74,37 +74,56 @@ export const useCalculatorStore = defineStore('calculator', () => {
 
   // Actions
   function setYear(year: number) {
-    selectedYear.value = year
     const config = getYearConfig(year)
-    if (config) {
-      // Update default form based on year
-      params.value.forme.value = config.defaultForm
-      params.value.caisseRetraite.value = config.defaultPensionFund
+    // Ignore unknown years (e.g. from a URL or an imported save)
+    if (!config) {
+      return
+    }
 
-      // Disable features not available for this year
-      if (!config.features.hasFlatTax) {
-        params.value.pfu.value = 0
-      }
-      if (!config.features.hasZfuExemption) {
-        params.value.zfu.value = 0
-      }
+    selectedYear.value = year
+
+    // Update default form based on year
+    params.value.forme.value = config.defaultForm
+    params.value.caisseRetraite.value = config.defaultPensionFund
+
+    // Disable features not available for this year
+    if (!config.features.hasFlatTax) {
+      params.value.pfu.value = 0
+    }
+    if (!config.features.hasZfuExemption) {
+      params.value.zfu.value = 0
     }
   }
+
+  const ALLOWED_STRING_VALUES: Record<string, readonly string[]> = {
+    forme: ['EURL', 'SASU'],
+    caisseRetraite: ['CIPAV', 'SSI']
+  }
+  const CHECKBOX_PARAMS = ['accre', 'pfu', 'zfu']
 
   function updateParam(
     paramName: keyof CalculatorState['params'],
     value: number | string | 0 | 1
   ) {
     const param = params.value[paramName]
-    if (param) {
-      // Type-safe assignment based on parameter type
-      if ('notSlider' in param && param.notSlider) {
-        // String or checkbox parameter
-        ;(param as any).value = value
-      } else {
-        // Numeric parameter
-        ;(param as any).value = value
+    if (!param) {
+      return
+    }
+
+    if (paramName in ALLOWED_STRING_VALUES) {
+      if (typeof value !== 'string' || !ALLOWED_STRING_VALUES[paramName].includes(value)) {
+        return
       }
+      param.value = value
+    } else if (CHECKBOX_PARAMS.includes(paramName)) {
+      param.value = value ? 1 : 0
+    } else {
+      // Numeric parameter: reject '' (cleared input), NaN and non-numbers,
+      // and never go below the minimum (e.g. nbParts >= 1, nbMois > 0)
+      if (typeof value !== 'number' || !Number.isFinite(value)) {
+        return
+      }
+      param.value = Math.max(param.min, value)
     }
 
     // Auto-disable PFU if not SASU
