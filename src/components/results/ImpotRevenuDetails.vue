@@ -136,10 +136,10 @@ const props = defineProps<Props>()
     <div class="mt-4 p-3 bg-gray-50 rounded text-sm">
       <div class="font-medium text-gray-700 mb-1">Taux moyen d'imposition</div>
       <div class="text-xs text-gray-600 mb-2">
-        IR total / Revenu imposable
+        IR au barème / Revenu imposable (hors PFU)
       </div>
       <div class="text-2xl font-semibold text-indigo-700">
-        {{ result.IR.assiette > 0 ? ((result.IR.impot / result.IR.assiette) * 100).toFixed(2) : 0 }} %
+        {{ result.IR.assiette > 0 ? ((result.IR.impotBareme / result.IR.assiette) * 100).toFixed(2) : 0 }} %
       </div>
     </div>
   </div>

@@ -137,3 +137,20 @@ describe('ExerciceCalculator - regressions', () => {
     })
   })
 })
+
+describe('Flat tax (PFU)', () => {
+  const result = new ExerciceCalculator(year2018).calculate({ ...baseParams, pfu: true })
+
+  it('splits IR between progressive scale and flat tax', () => {
+    expect(result.IR.impotPFU).toBeCloseTo(10000 * 0.128, 2)
+    expect(result.IR.impot).toBeCloseTo(result.IR.impotBareme + result.IR.impotPFU, 2)
+  })
+
+  it('deducts the flat tax only once from the net income', () => {
+    expect(result.net).toBeCloseTo(
+      result.remuneration.net + result.dividendes.net - result.IR.impotBareme,
+      2
+    )
+    expect(result.net).toBeCloseTo(34592.98, 2)
+  })
+})

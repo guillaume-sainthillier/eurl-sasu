@@ -55,8 +55,9 @@ export interface ExerciceResult {
   }
   IR: {
     assiette: number
-    impot: number
-    impotPFU: number
+    impot: number // Total: progressive scale + flat tax
+    impotBareme: number // Progressive scale only
+    impotPFU: number // Flat tax only (already deducted from dividendes.net)
     tranches: any[]
   }
   IS: {
@@ -133,6 +134,7 @@ export default class ExerciceCalculator {
       IR: {
         assiette: 0,
         impot: 0,
+        impotBareme: 0,
         impotPFU: 0,
         tranches: []
       },
@@ -267,20 +269,21 @@ export default class ExerciceCalculator {
 
     this.impotRevenu.revenu = res.IR.assiette
     this.impotRevenu.nbParts = params.nbParts
-    res.IR.impot = this.impotRevenu.getImpot() + res.IR.impotPFU
+    res.IR.impotBareme = this.impotRevenu.getImpot()
+    res.IR.impot = res.IR.impotBareme + res.IR.impotPFU
     res.IR.tranches = this.impotRevenu.getTranches()
 
     // FINAL CALCULATIONS
     res.brut =
       res.societe.ca - res.societe.charges - res.societe.reste + params.autresRevenus + params.bnc
 
+    // The flat tax is already deducted from dividendes.net
     res.net =
       res.remuneration.net +
       res.dividendes.net +
       params.autresRevenus +
       params.bnc -
-      res.IR.impot +
-      res.IR.impotPFU
+      res.IR.impotBareme
 
     return res
   }
