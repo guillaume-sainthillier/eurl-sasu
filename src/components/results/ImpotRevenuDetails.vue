@@ -7,7 +7,7 @@ interface Props {
   nbParts: number
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 </script>
 
 <template>

@@ -8,7 +8,7 @@ interface Props {
   hasPFU: boolean
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 </script>
 
 <template>

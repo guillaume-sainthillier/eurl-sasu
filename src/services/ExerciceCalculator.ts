@@ -26,6 +26,13 @@ export interface ExerciceParams {
   caisseRetraite: 'CIPAV' | 'SSI'
 }
 
+export interface TrancheDetail {
+  value: number
+  min: number
+  max: number | null
+  taux: number
+}
+
 export interface ExerciceResult {
   remuneration: {
     cotisationsSociales: number
@@ -61,13 +68,13 @@ export interface ExerciceResult {
     impot: number // Total: progressive scale + flat tax
     impotBareme: number // Progressive scale only
     impotPFU: number // Flat tax only (already deducted from dividendes.net)
-    tranches: any[]
+    tranches: TrancheDetail[]
   }
   IS: {
     assiette: number
     impot: number
     exonerations: number
-    tranches: any[]
+    tranches: TrancheDetail[]
   }
   autresRevenus: number
   bnc: number
