@@ -5,6 +5,7 @@ import { useCalculatorStore } from '@/stores/calculator'
 import { formatDate } from '@/utils/formatters'
 import { Save, Download, Upload, Trash2 } from 'lucide-vue-next'
 import ShareLink from './ShareLink.vue'
+import BaseModal from '../common/BaseModal.vue'
 
 const savedStatesStore = useSavedStatesStore()
 const calculatorStore = useCalculatorStore()
@@ -73,6 +74,13 @@ function handleExport() {
   URL.revokeObjectURL(url)
 }
 
+function closeImportDialog() {
+  showImportDialog.value = false
+  importData.value = ''
+  importError.value = ''
+  isDragging.value = false
+}
+
 function handleImport() {
   importError.value = ''
   if (!importData.value.trim()) {
@@ -82,8 +90,7 @@ function handleImport() {
 
   const success = savedStatesStore.importStates(importData.value)
   if (success) {
-    showImportDialog.value = false
-    importData.value = ''
+    closeImportDialog()
   } else {
     importError.value = 'Format JSON invalide'
   }
@@ -150,35 +157,31 @@ function processFile(file: File) {
     <div v-else>
       <!-- Action Buttons -->
       <div class="flex flex-wrap gap-2 mb-4">
-        <button
-          @click="openSaveDialog"
-          class="px-4 py-2 bg-transparent hover:bg-gray-50 text-gray-800 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 border border-gray-800"
-        >
+        <button type="button" class="btn btn-outline btn-sm" @click="openSaveDialog">
           <Save :size="16" class="text-blue-600" />
           Sauvegarder l'état actuel
         </button>
 
         <button
           v-if="savedStatesStore.savedStates.length > 0"
+          type="button"
+          class="btn btn-outline btn-sm"
           @click="handleExport"
-          class="px-4 py-2 bg-transparent hover:bg-gray-50 text-gray-800 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 border border-gray-800"
         >
           <Download :size="16" class="text-blue-600" />
           Exporter tout
         </button>
 
-        <button
-          @click="showImportDialog = true"
-          class="px-4 py-2 bg-transparent hover:bg-gray-50 text-gray-800 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 border border-gray-800"
-        >
+        <button type="button" class="btn btn-outline btn-sm" @click="showImportDialog = true">
           <Upload :size="16" class="text-blue-600" />
           Importer
         </button>
 
         <button
           v-if="savedStatesStore.savedStates.length > 0"
+          type="button"
+          class="btn btn-outline btn-sm hover:border-red-300 hover:bg-red-50 hover:text-red-700 focus-visible:ring-red-500"
           @click="savedStatesStore.clearAllStates()"
-          class="px-4 py-2 bg-transparent hover:bg-gray-50 text-gray-800 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 border border-gray-800"
         >
           <Trash2 :size="16" class="text-red-600" />
           Tout supprimer
@@ -200,171 +203,163 @@ function processFile(file: File) {
       </div>
 
       <!-- Saved States List -->
-      <div v-else class="space-y-2">
-        <div
+      <ul v-else class="space-y-2">
+        <li
           v-for="state in sortedStates"
           :key="state.name"
-          class="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-          :class="{
-            'border-blue-500 bg-blue-50': state.name === savedStatesStore.currentStateName
-          }"
+          class="p-4 border rounded-lg transition-colors"
+          :class="
+            state.name === savedStatesStore.currentStateName
+              ? 'border-blue-500 bg-blue-50'
+              : 'border-gray-200'
+          "
+          :aria-current="state.name === savedStatesStore.currentStateName ? 'true' : undefined"
         >
-          <div class="flex justify-between items-start">
-            <div class="flex-1">
-              <h3 class="font-semibold text-gray-800">{{ state.name }}</h3>
+          <div class="flex justify-between items-center gap-3">
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-gray-800 truncate">{{ state.name }}</h3>
               <div class="text-xs text-gray-600 mt-1">
                 <span>Année: {{ state.year }}</span>
-                <span class="mx-2">•</span>
+                <span class="mx-2" aria-hidden="true">•</span>
                 <span>{{ formatDate(state.savedAt) }}</span>
               </div>
             </div>
 
-            <div class="flex gap-2">
+            <div class="flex items-center gap-1">
               <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                :aria-label="`Charger la sauvegarde ${state.name}`"
                 @click="handleLoad(state.name)"
-                class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition-colors"
-                title="Charger cette sauvegarde"
               >
                 Charger
               </button>
               <button
+                type="button"
+                class="btn-icon btn-danger-ghost"
+                :title="`Supprimer la sauvegarde ${state.name}`"
+                :aria-label="`Supprimer la sauvegarde ${state.name}`"
                 @click="handleDelete(state.name)"
-                class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm transition-colors"
-                title="Supprimer cette sauvegarde"
               >
-                ✕
+                <Trash2 :size="16" />
               </button>
             </div>
           </div>
-        </div>
-      </div>
+        </li>
+      </ul>
     </div>
 
     <!-- Save Dialog -->
-    <div
-      v-if="showSaveDialog"
-      class="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
-      @click.self="showSaveDialog = false"
-    >
-      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Sauvegarder l'état actuel</h3>
+    <BaseModal :open="showSaveDialog" title="Sauvegarder l'état actuel" @close="showSaveDialog = false">
+      <label for="save-name-input" class="block text-sm font-medium text-gray-700 mb-2">
+        Nom de la sauvegarde
+      </label>
+      <input
+        id="save-name-input"
+        v-model="saveName"
+        type="text"
+        placeholder="Ex: Scenario 1, Test SASU, etc."
+        class="form-control"
+        @keyup.enter="handleSave"
+        autofocus
+      />
 
-        <label for="save-name-input" class="block text-sm font-medium text-gray-700 mb-2">
-          Nom de la sauvegarde
-        </label>
-        <input
-          id="save-name-input"
-          v-model="saveName"
-          type="text"
-          placeholder="Ex: Scenario 1, Test SASU, etc."
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          @keyup.enter="handleSave"
-          autofocus
-        />
+      <p class="text-xs text-gray-600 mt-2">
+        Si une sauvegarde avec ce nom existe déjà, elle sera écrasée.
+      </p>
 
-        <p class="text-xs text-gray-600 mt-2">
-          Si une sauvegarde avec ce nom existe déjà, elle sera écrasée.
-        </p>
-
-        <div class="flex gap-3 mt-6">
-          <button
-            @click="handleSave"
-            :disabled="!saveName.trim()"
-            class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium"
-          >
-            Sauvegarder
-          </button>
-          <button
-            @click="showSaveDialog = false"
-            class="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors font-medium"
-          >
-            Annuler
-          </button>
-        </div>
-      </div>
-    </div>
+      <template #footer>
+        <button type="button" class="btn btn-secondary flex-1" @click="showSaveDialog = false">
+          Annuler
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary flex-1"
+          :disabled="!saveName.trim()"
+          @click="handleSave"
+        >
+          Sauvegarder
+        </button>
+      </template>
+    </BaseModal>
 
     <!-- Import Dialog -->
-    <div
-      v-if="showImportDialog"
-      class="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
-      @click.self="showImportDialog = false"
+    <BaseModal
+      :open="showImportDialog"
+      title="Importer des sauvegardes"
+      size="2xl"
+      @close="closeImportDialog"
     >
-      <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Importer des sauvegardes</h3>
-
-        <!-- Drag & Drop Zone -->
-        <div
-          @drop="handleDrop"
-          @dragover="handleDragOver"
-          @dragleave="handleDragLeave"
-          class="mb-4 p-8 border-2 border-dashed rounded-lg transition-colors"
-          :class="isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'"
-        >
-          <div class="text-center">
-            <Upload :size="32" class="mx-auto mb-2 text-gray-400" />
-            <p class="text-sm font-medium text-gray-700 mb-1">
-              Glissez-déposez votre fichier JSON ici
-            </p>
-            <p class="text-xs text-gray-500 mb-3">ou</p>
-            <label
-              for="import-file-input"
-              class="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg cursor-pointer transition-colors text-sm font-medium"
-            >
-              Sélectionner un fichier
-            </label>
-            <input
-              id="import-file-input"
-              type="file"
-              accept=".json"
-              @change="handleFileSelect"
-              class="hidden"
-            />
-          </div>
-        </div>
-
-        <div class="relative flex items-center justify-center my-4">
-          <div class="border-t border-gray-300 flex-grow"></div>
-          <span class="px-3 text-xs text-gray-500 bg-white">OU</span>
-          <div class="border-t border-gray-300 flex-grow"></div>
-        </div>
-
-        <!-- Text Input Option -->
-        <div>
-          <label for="import-data-textarea" class="block text-sm font-medium text-gray-700 mb-2">
-            Coller le JSON exporté
+      <!-- Drag & Drop Zone -->
+      <div
+        @drop="handleDrop"
+        @dragover="handleDragOver"
+        @dragleave="handleDragLeave"
+        class="mb-4 p-8 border-2 border-dashed rounded-lg transition-colors"
+        :class="isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'"
+      >
+        <div class="text-center">
+          <Upload :size="32" class="mx-auto mb-2 text-gray-400" />
+          <p class="text-sm font-medium text-gray-700 mb-1">
+            Glissez-déposez votre fichier JSON ici
+          </p>
+          <p class="text-xs text-gray-500 mb-3">ou</p>
+          <!-- Visually hidden but focusable: the label shows the focus ring -->
+          <input
+            id="import-file-input"
+            type="file"
+            accept=".json"
+            @change="handleFileSelect"
+            class="peer sr-only"
+          />
+          <label
+            for="import-file-input"
+            class="btn btn-primary btn-sm peer-focus-visible:ring-2 peer-focus-visible:ring-blue-500 peer-focus-visible:ring-offset-2"
+          >
+            Sélectionner un fichier
           </label>
-          <textarea
-            id="import-data-textarea"
-            v-model="importData"
-            rows="10"
-            placeholder='[{"name": "...", "year": 2018, ...}]'
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-xs"
-          ></textarea>
-        </div>
-
-        <p v-if="importError" class="text-sm text-red-600 mt-2">{{ importError }}</p>
-
-        <div class="flex gap-3 mt-6">
-          <button
-            @click="handleImport"
-            :disabled="!importData.trim()"
-            class="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium"
-          >
-            Importer
-          </button>
-          <button
-            @click="
-              showImportDialog = false;
-              importData = '';
-              importError = '';
-            "
-            class="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors font-medium"
-          >
-            Annuler
-          </button>
         </div>
       </div>
-    </div>
+
+      <div class="relative flex items-center justify-center my-4">
+        <div class="border-t border-gray-300 flex-grow"></div>
+        <span class="px-3 text-xs text-gray-500 bg-white">OU</span>
+        <div class="border-t border-gray-300 flex-grow"></div>
+      </div>
+
+      <!-- Text Input Option -->
+      <div>
+        <label for="import-data-textarea" class="block text-sm font-medium text-gray-700 mb-2">
+          Coller le JSON exporté
+        </label>
+        <textarea
+          id="import-data-textarea"
+          v-model="importData"
+          rows="10"
+          placeholder='[{"name": "...", "year": 2018, ...}]'
+          class="form-control font-mono text-xs"
+          :aria-invalid="importError ? 'true' : undefined"
+          aria-describedby="import-error"
+        ></textarea>
+      </div>
+
+      <p v-if="importError" id="import-error" role="alert" class="text-sm text-red-600 mt-2">
+        {{ importError }}
+      </p>
+
+      <template #footer>
+        <button type="button" class="btn btn-secondary flex-1" @click="closeImportDialog">
+          Annuler
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary flex-1"
+          :disabled="!importData.trim()"
+          @click="handleImport"
+        >
+          Importer
+        </button>
+      </template>
+    </BaseModal>
   </div>
 </template>

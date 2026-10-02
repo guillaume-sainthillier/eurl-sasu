@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, useId } from 'vue'
 import HelpIcon from '../common/HelpIcon.vue'
 
 interface Props {
@@ -25,6 +25,8 @@ const localValue = computed({
   set: (value: number) => emit('update:modelValue', value)
 })
 
+const inputId = useId()
+
 const formattedValue = computed(() => {
   return new Intl.NumberFormat('fr-FR').format(props.modelValue)
 })
@@ -33,10 +35,10 @@ const formattedValue = computed(() => {
 <template>
   <div class="mb-4">
     <div class="flex justify-between items-center mb-2">
-      <label class="text-sm font-medium text-gray-700 flex items-center">
-        {{ label }}
+      <div class="flex items-center">
+        <label :for="inputId" class="text-sm font-medium text-gray-700">{{ label }}</label>
         <HelpIcon v-if="helpKey" :field-key="helpKey" />
-      </label>
+      </div>
       <span class="text-sm font-mono font-semibold text-blue-600">
         {{ formattedValue }} {{ suffix }}
       </span>
@@ -49,15 +51,17 @@ const formattedValue = computed(() => {
         :min="min"
         :max="max"
         :step="step"
-        class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600 hover:accent-blue-700"
+        class="form-range flex-1"
+        :aria-label="label"
       />
       <input
+        :id="inputId"
         v-model.number="localValue"
         type="number"
         :min="min"
         :max="max"
         :step="step"
-        class="w-32 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        class="form-control w-32 text-sm"
       />
     </div>
   </div>

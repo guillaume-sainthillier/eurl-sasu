@@ -44,7 +44,7 @@ function handleYearChange(event: Event) {
           id="year-select"
           :value="selectedYear"
           @change="handleYearChange"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+          class="form-control cursor-pointer text-lg"
         >
           <option v-for="year in yearsList" :key="year.year" :value="year.year">
             {{ year.year }}

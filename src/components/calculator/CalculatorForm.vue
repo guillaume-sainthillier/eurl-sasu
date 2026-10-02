@@ -25,10 +25,10 @@ function toggleCheckbox(paramName: string) {
     <h2 class="text-xl font-semibold text-gray-800 mb-6">Paramètres</h2>
 
     <!-- Company Form Selection -->
-    <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-      <label class="block text-sm font-medium text-gray-700 mb-3">Forme juridique</label>
-      <div class="flex gap-4">
-        <label for="forme-eurl" class="flex items-center cursor-pointer">
+    <fieldset class="mb-6 p-4 bg-gray-50 rounded-lg">
+      <legend class="float-left w-full text-sm font-medium text-gray-700 mb-2">Forme juridique</legend>
+      <div class="clear-left flex gap-4">
+        <label for="forme-eurl" class="form-check-label">
           <input
             id="forme-eurl"
             type="radio"
@@ -36,11 +36,11 @@ function toggleCheckbox(paramName: string) {
             value="EURL"
             :checked="isEURL"
             @change="updateParam('forme', 'EURL')"
-            class="w-4 h-4 text-blue-600 focus:ring-blue-500"
+            class="form-check"
           />
-          <span class="ml-2 text-gray-700">EURL</span>
+          <span>EURL</span>
         </label>
-        <label for="forme-sasu" class="flex items-center cursor-pointer">
+        <label for="forme-sasu" class="form-check-label">
           <input
             id="forme-sasu"
             type="radio"
@@ -48,12 +48,12 @@ function toggleCheckbox(paramName: string) {
             value="SASU"
             :checked="isSASU"
             @change="updateParam('forme', 'SASU')"
-            class="w-4 h-4 text-blue-600 focus:ring-blue-500"
+            class="form-check"
           />
-          <span class="ml-2 text-gray-700">SASU</span>
+          <span>SASU</span>
         </label>
       </div>
-    </div>
+    </fieldset>
 
     <!-- Revenue and Expenses -->
     <div class="space-y-1">
@@ -172,28 +172,28 @@ function toggleCheckbox(paramName: string) {
       <h3 class="text-lg font-medium text-gray-700 mb-3">Options</h3>
 
       <!-- ACCRE -->
-      <label v-if="availableFeatures?.hasAccre" for="accre-checkbox" class="flex items-center cursor-pointer">
+      <label v-if="availableFeatures?.hasAccre" for="accre-checkbox" class="form-check-label flex w-fit">
         <input
           id="accre-checkbox"
           type="checkbox"
           :checked="Boolean(params.accre.value)"
           @change="toggleCheckbox('accre')"
-          class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+          class="form-check"
         />
-        <span class="ml-2 text-gray-700 flex items-center">
+        <span class="flex items-center">
           ACCRE (Aide à la Création ou Reprise d'Entreprise)
           <HelpIcon field-key="accre" />
         </span>
       </label>
 
       <!-- Pension Fund Selection (EURL only, 2018+) -->
-      <div v-if="isEURL && availableFeatures?.hasPensionFundSelection" class="ml-6">
-        <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+      <fieldset v-if="isEURL && availableFeatures?.hasPensionFundSelection" class="ml-6">
+        <legend class="text-sm font-medium text-gray-700 mb-1 flex items-center">
           Caisse de retraite
           <HelpIcon field-key="caisseRetraite" />
-        </label>
+        </legend>
         <div class="flex gap-4">
-          <label for="caisse-cipav" class="flex items-center cursor-pointer">
+          <label for="caisse-cipav" class="form-check-label">
             <input
               id="caisse-cipav"
               type="radio"
@@ -201,11 +201,11 @@ function toggleCheckbox(paramName: string) {
               value="CIPAV"
               :checked="params.caisseRetraite.value === 'CIPAV'"
               @change="updateParam('caisseRetraite', 'CIPAV')"
-              class="w-4 h-4 text-blue-600 focus:ring-blue-500"
+              class="form-check"
             />
-            <span class="ml-2 text-sm text-gray-700">CIPAV</span>
+            <span class="text-sm">CIPAV</span>
           </label>
-          <label for="caisse-ssi" class="flex items-center cursor-pointer">
+          <label for="caisse-ssi" class="form-check-label">
             <input
               id="caisse-ssi"
               type="radio"
@@ -213,38 +213,38 @@ function toggleCheckbox(paramName: string) {
               value="SSI"
               :checked="params.caisseRetraite.value === 'SSI'"
               @change="updateParam('caisseRetraite', 'SSI')"
-              class="w-4 h-4 text-blue-600 focus:ring-blue-500"
+              class="form-check"
             />
-            <span class="ml-2 text-sm text-gray-700">SSI</span>
+            <span class="text-sm">SSI</span>
           </label>
         </div>
-      </div>
+      </fieldset>
 
       <!-- Flat Tax (SASU only, 2018+) -->
-      <label v-if="canUsePFU" for="pfu-checkbox" class="flex items-center cursor-pointer">
+      <label v-if="canUsePFU" for="pfu-checkbox" class="form-check-label flex w-fit">
         <input
           id="pfu-checkbox"
           type="checkbox"
           :checked="Boolean(params.pfu.value)"
           @change="toggleCheckbox('pfu')"
-          class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+          class="form-check"
         />
-        <span class="ml-2 text-gray-700 flex items-center">
+        <span class="flex items-center">
           Flat Tax (PFU - 30%)
           <HelpIcon field-key="pfu" />
         </span>
       </label>
 
       <!-- ZFU (2018+) -->
-      <label v-if="availableFeatures?.hasZfuExemption" for="zfu-checkbox" class="flex items-center cursor-pointer">
+      <label v-if="availableFeatures?.hasZfuExemption" for="zfu-checkbox" class="form-check-label flex w-fit">
         <input
           id="zfu-checkbox"
           type="checkbox"
           :checked="Boolean(params.zfu.value)"
           @change="toggleCheckbox('zfu')"
-          class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+          class="form-check"
         />
-        <span class="ml-2 text-gray-700 flex items-center">
+        <span class="flex items-center">
           ZFU (Zone Franche Urbaine)
           <HelpIcon field-key="zfu" />
         </span>
