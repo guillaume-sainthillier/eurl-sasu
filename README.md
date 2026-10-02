@@ -70,8 +70,9 @@ yarn test:unit:watch  # Run tests in watch mode
 yarn test:unit:coverage # Generate coverage report
 
 # Code Quality
-yarn lint             # Run ESLint and fix issues
-yarn lint:check       # Run ESLint without fixing (used in CI)
+yarn lint             # Run Biome (lint + format) and fix issues
+yarn lint:check       # Run Biome without fixing (used in CI)
+yarn prettier         # Format CSS, Markdown and YAML (files Biome does not handle)
 yarn type-check       # Run TypeScript compiler check
 ```
 
