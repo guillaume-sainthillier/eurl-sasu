@@ -54,7 +54,7 @@ jobs:
   # Single required status check for the main ruleset, whatever the test matrix contains.
   ci-passed:
     name: CI passed
-    needs: [test]
+    needs: [test, build]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -68,7 +68,6 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
