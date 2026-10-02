@@ -36,7 +36,7 @@ export const helpContent: Record<string, HelpContent> = {
   remuneration: {
     title: 'Rémunération nette',
     description: 'Montant net que vous souhaitez vous verser en tant que dirigeant. Les cotisations sociales seront calculées et ajoutées automatiquement.',
-    additionalInfo: 'En EURL: ~45% de cotisations sociales. En SASU: ~82% de cotisations sociales (ou ~35% avec ACCRE).'
+    additionalInfo: 'En EURL: ~45% de cotisations sociales. En SASU: ~82% de cotisations sociales en 2018, ~89% en 2017 (ou ~35% avec ACCRE).'
   },
 
   dividendes: {
@@ -66,7 +66,7 @@ export const helpContent: Record<string, HelpContent> = {
   accre: {
     title: 'ACCRE',
     description: 'Aide à la Création ou Reprise d\'Entreprise. Réduit les cotisations sociales pendant la première année d\'activité.',
-    additionalInfo: 'SASU: réduit les cotisations de ~82% à ~35% du net. EURL: réduction progressive sur 3 ans.'
+    additionalInfo: 'SASU: réduit les cotisations à ~35% du net. EURL: exonération totale jusqu\'à 75% du PASS, dégressive jusqu\'au PASS.'
   },
 
   pfu: {

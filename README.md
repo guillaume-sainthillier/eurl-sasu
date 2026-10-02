@@ -217,7 +217,7 @@ The CI/CD pipeline:
 
 **SASU (Société par Actions Simplifiée Unipersonnelle)**:
 - Président = Assimilé Salarié
-- Cotisations sociales ~82% du net sur la rémunération (~35% avec ACCRE)
+- Cotisations sociales ~82% du net sur la rémunération en 2018, ~89% en 2017 (~35% avec ACCRE)
 - Dividendes: 17.2% de prélèvements sociaux uniquement
 - Option PFU (Flat Tax 30%) possible en 2018+
 

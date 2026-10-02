@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import type { ExerciceResult } from '@/services/ExerciceCalculator'
 import { formatCurrency } from '@/utils/formatters'
+import { useCalculation } from '@/composables/useCalculation'
 
 interface Props {
   result: ExerciceResult
@@ -14,6 +15,11 @@ const formatPercent = (value: number | null): string => {
   if (value === null) return 'Forfaitaire'
   return `${value.toFixed(2)} %`
 }
+
+const { yearConfig } = useCalculation()
+
+const formatRate = (rate: number | undefined): string =>
+  rate === undefined ? '-' : `~${Math.round(rate * 100)}%`
 
 const showCotisationsDetail = computed(() => {
   return props.forme === 'EURL' && props.result.remuneration.cs
@@ -211,7 +217,8 @@ const showCotisationsDetail = computed(() => {
     <!-- SASU: Simplified -->
     <div v-else class="p-4 bg-gray-50 rounded text-sm">
       <p class="text-gray-600 mb-2">
-        En SASU, les cotisations sociales sont calculées de manière simplifiée (~82% du net, ou ~35% avec ACCRE).
+        En SASU, les cotisations sociales sont calculées de manière simplifiée ({{ formatRate(yearConfig?.rates.tauxCsSalaire) }} du net, ou
+        {{ formatRate(yearConfig?.rates.tauxAccreCsSalaire) }} avec ACCRE).
       </p>
       <div class="grid grid-cols-2 gap-2 text-xs">
         <div class="text-gray-600">Net :</div>
