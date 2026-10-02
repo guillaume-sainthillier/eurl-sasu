@@ -11,10 +11,16 @@ on:
 permissions:
   contents: read
 
+# Supersede outdated runs of a pull request; push runs (head_ref empty) are never cancelled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   # Job 1: Install dependencies
   install:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,6 +46,7 @@ jobs:
   test:
     needs: install
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       matrix:
         task: [test, lint, typecheck]
@@ -80,6 +87,7 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout code
@@ -114,6 +122,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     if: github.ref == 'refs/heads/main'
     permissions:
       contents: write
