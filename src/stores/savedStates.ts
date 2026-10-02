@@ -5,158 +5,156 @@ import type { SavedState } from '@/types/calculator.types'
 const STORAGE_KEY = 'eurl-sasu-saved-states'
 
 function isSavedState(value: unknown): value is SavedState {
-  if (typeof value !== 'object' || value === null) {
-    return false
-  }
-  const state = value as Record<string, unknown>
-  return (
-    typeof state.name === 'string' &&
-    typeof state.year === 'number' &&
-    typeof state.savedAt === 'number' &&
-    typeof state.params === 'object' &&
-    state.params !== null &&
-    Object.values(state.params).every(
-      (param) => typeof param === 'object' && param !== null && 'value' in param
+    if (typeof value !== 'object' || value === null) {
+        return false
+    }
+    const state = value as Record<string, unknown>
+    return (
+        typeof state.name === 'string' &&
+        typeof state.year === 'number' &&
+        typeof state.savedAt === 'number' &&
+        typeof state.params === 'object' &&
+        state.params !== null &&
+        Object.values(state.params).every((param) => typeof param === 'object' && param !== null && 'value' in param)
     )
-  )
 }
 
 export const useSavedStatesStore = defineStore('savedStates', () => {
-  // State
-  const savedStates = ref<SavedState[]>([])
-  const currentStateName = ref<string>('')
-
-  // Check if localStorage is available
-  function hasLocalStorage(): boolean {
-    const test = '_test-local-storage'
-    try {
-      localStorage.setItem(test, test)
-      localStorage.removeItem(test)
-      return true
-    } catch {
-      return false
-    }
-  }
-
-  // Actions
-  function loadStates() {
-    if (!hasLocalStorage()) {
-      return
-    }
-
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        savedStates.value = JSON.parse(stored)
-      }
-    } catch (error) {
-      console.error('Error loading saved states:', error)
-      savedStates.value = []
-    }
-  }
-
-  function persistStates() {
-    if (!hasLocalStorage()) {
-      return
-    }
-
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(savedStates.value))
-    } catch (error) {
-      console.error('Error saving states:', error)
-    }
-  }
-
-  function saveState(name: string, year: number, params: SavedState['params']) {
-    if (!hasLocalStorage()) {
-      return
-    }
-
-    // Check if state with this name already exists
-    const existingIndex = savedStates.value.findIndex((state) => state.name === name)
-
-    const newState: SavedState = {
-      name,
-      year,
-      params: JSON.parse(JSON.stringify(params)), // Deep copy
-      savedAt: Date.now()
-    }
-
-    if (existingIndex >= 0) {
-      // Update existing state
-      savedStates.value[existingIndex] = newState
-    } else {
-      // Add new state
-      savedStates.value.push(newState)
-    }
-
-    currentStateName.value = name
-    persistStates()
-  }
-
-  function loadState(name: string): SavedState | null {
-    const state = savedStates.value.find((s) => s.name === name)
-    if (state) {
-      currentStateName.value = name
-      return state
-    }
-    return null
-  }
-
-  function deleteState(name: string) {
-    const index = savedStates.value.findIndex((s) => s.name === name)
-    if (index >= 0) {
-      savedStates.value.splice(index, 1)
-      persistStates()
-
-      if (currentStateName.value === name) {
-        currentStateName.value = ''
-      }
-    }
-  }
-
-  function clearAllStates() {
-    if (confirm('Êtes-vous certain de vouloir supprimer toutes vos sauvegardes ?')) {
-      savedStates.value = []
-      currentStateName.value = ''
-      persistStates()
-    }
-  }
-
-  function exportStates(): string {
-    return JSON.stringify(savedStates.value, null, 2)
-  }
-
-  function importStates(jsonData: string): boolean {
-    try {
-      const imported: unknown = JSON.parse(jsonData)
-      // Validate the structure: every entry must be loadable later on
-      if (!Array.isArray(imported) || !imported.every(isSavedState)) {
-        return false
-      }
-      savedStates.value = imported
-      persistStates()
-      return true
-    } catch (error) {
-      console.error('Error importing states:', error)
-      return false
-    }
-  }
-
-  // Initialize on store creation
-  loadStates()
-
-  return {
     // State
-    savedStates,
-    currentStateName,
+    const savedStates = ref<SavedState[]>([])
+    const currentStateName = ref<string>('')
+
+    // Check if localStorage is available
+    function hasLocalStorage(): boolean {
+        const test = '_test-local-storage'
+        try {
+            localStorage.setItem(test, test)
+            localStorage.removeItem(test)
+            return true
+        } catch {
+            return false
+        }
+    }
+
     // Actions
-    saveState,
-    loadState,
-    deleteState,
-    clearAllStates,
-    exportStates,
-    importStates,
-    hasLocalStorage
-  }
+    function loadStates() {
+        if (!hasLocalStorage()) {
+            return
+        }
+
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY)
+            if (stored) {
+                savedStates.value = JSON.parse(stored)
+            }
+        } catch (error) {
+            console.error('Error loading saved states:', error)
+            savedStates.value = []
+        }
+    }
+
+    function persistStates() {
+        if (!hasLocalStorage()) {
+            return
+        }
+
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(savedStates.value))
+        } catch (error) {
+            console.error('Error saving states:', error)
+        }
+    }
+
+    function saveState(name: string, year: number, params: SavedState['params']) {
+        if (!hasLocalStorage()) {
+            return
+        }
+
+        // Check if state with this name already exists
+        const existingIndex = savedStates.value.findIndex((state) => state.name === name)
+
+        const newState: SavedState = {
+            name,
+            year,
+            params: JSON.parse(JSON.stringify(params)), // Deep copy
+            savedAt: Date.now(),
+        }
+
+        if (existingIndex >= 0) {
+            // Update existing state
+            savedStates.value[existingIndex] = newState
+        } else {
+            // Add new state
+            savedStates.value.push(newState)
+        }
+
+        currentStateName.value = name
+        persistStates()
+    }
+
+    function loadState(name: string): SavedState | null {
+        const state = savedStates.value.find((s) => s.name === name)
+        if (state) {
+            currentStateName.value = name
+            return state
+        }
+        return null
+    }
+
+    function deleteState(name: string) {
+        const index = savedStates.value.findIndex((s) => s.name === name)
+        if (index >= 0) {
+            savedStates.value.splice(index, 1)
+            persistStates()
+
+            if (currentStateName.value === name) {
+                currentStateName.value = ''
+            }
+        }
+    }
+
+    function clearAllStates() {
+        if (confirm('Êtes-vous certain de vouloir supprimer toutes vos sauvegardes ?')) {
+            savedStates.value = []
+            currentStateName.value = ''
+            persistStates()
+        }
+    }
+
+    function exportStates(): string {
+        return JSON.stringify(savedStates.value, null, 2)
+    }
+
+    function importStates(jsonData: string): boolean {
+        try {
+            const imported: unknown = JSON.parse(jsonData)
+            // Validate the structure: every entry must be loadable later on
+            if (!Array.isArray(imported) || !imported.every(isSavedState)) {
+                return false
+            }
+            savedStates.value = imported
+            persistStates()
+            return true
+        } catch (error) {
+            console.error('Error importing states:', error)
+            return false
+        }
+    }
+
+    // Initialize on store creation
+    loadStates()
+
+    return {
+        // State
+        savedStates,
+        currentStateName,
+        // Actions
+        saveState,
+        loadState,
+        deleteState,
+        clearAllStates,
+        exportStates,
+        importStates,
+        hasLocalStorage,
+    }
 })

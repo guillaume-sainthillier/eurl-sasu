@@ -14,7 +14,7 @@ export const AVAILABLE_YEARS: YearConfig[] = [year2017, year2018]
  * @returns Year configuration or undefined if not found
  */
 export function getYearConfig(year: number): YearConfig | undefined {
-  return AVAILABLE_YEARS.find((config) => config.year === year)
+    return AVAILABLE_YEARS.find((config) => config.year === year)
 }
 
 /**
@@ -22,7 +22,7 @@ export function getYearConfig(year: number): YearConfig | undefined {
  * @returns The most recent year configuration
  */
 export function getLatestYearConfig(): YearConfig {
-  return AVAILABLE_YEARS[AVAILABLE_YEARS.length - 1]
+    return AVAILABLE_YEARS[AVAILABLE_YEARS.length - 1]
 }
 
 /**
@@ -31,5 +31,5 @@ export function getLatestYearConfig(): YearConfig {
  * @returns The default year configuration
  */
 export function getDefaultYearConfig(): YearConfig {
-  return year2018
+    return year2018
 }

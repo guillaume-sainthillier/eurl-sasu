@@ -6,72 +6,72 @@ import type { PensionFundBase } from './PensionFundBase'
  * Source: https://www.secu-independants.fr/
  */
 export default class SSI implements PensionFundBase {
-  PASS: number = 39732
-  revenus: number
+    PASS: number = 39732
+    revenus: number
 
-  constructor(revenus: number, pass?: number) {
-    this.revenus = revenus
-    if (pass !== undefined) {
-      this.PASS = pass
-    }
-  }
-
-  // RETRAITE DE BASE
-  getRetraiteBase(): number {
-    // https://www.secu-independants.fr/cotisations/calcul-des-cotisations/taux-de-cotisations/
-    const assiette = this.getAssietteRetraiteBase()
-    let montant = (Math.min(this.PASS, assiette) * 17.75) / 100
-
-    if (assiette > this.PASS) {
-      montant += ((assiette - this.PASS) * 0.6) / 100
+    constructor(revenus: number, pass?: number) {
+        this.revenus = revenus
+        if (pass !== undefined) {
+            this.PASS = pass
+        }
     }
 
-    return montant
-  }
+    // RETRAITE DE BASE
+    getRetraiteBase(): number {
+        // https://www.secu-independants.fr/cotisations/calcul-des-cotisations/taux-de-cotisations/
+        const assiette = this.getAssietteRetraiteBase()
+        let montant = (Math.min(this.PASS, assiette) * 17.75) / 100
 
-  getAssietteRetraiteBase(): number {
-    return Math.max((11.5 * this.PASS) / 100, this.revenus)
-  }
+        if (assiette > this.PASS) {
+            montant += ((assiette - this.PASS) * 0.6) / 100
+        }
 
-  getTauxRetraiteBase(): number {
-    return (this.getRetraiteBase() / this.getAssietteRetraiteBase()) * 100
-  }
-
-  // RETRAITE COMPLÉMENTAIRE
-  getRetraiteComplementaire(): number {
-    // https://www.secu-independants.fr/cotisations/calcul-des-cotisations/taux-de-cotisations/
-    let montant = (Math.min(37960, this.revenus) * 7) / 100
-
-    if (this.revenus > 37960) {
-      montant += (Math.min(4 * this.PASS, this.revenus - 37960) * 8) / 100
+        return montant
     }
 
-    return montant
-  }
+    getAssietteRetraiteBase(): number {
+        return Math.max((11.5 * this.PASS) / 100, this.revenus)
+    }
 
-  getAssietteRetraiteComplementaire(): number {
-    return Math.max((11.5 * this.PASS) / 100, this.revenus)
-  }
+    getTauxRetraiteBase(): number {
+        return (this.getRetraiteBase() / this.getAssietteRetraiteBase()) * 100
+    }
 
-  getTauxRetraiteComplementaire(): number {
-    return (this.getRetraiteComplementaire() / this.getAssietteRetraiteComplementaire()) * 100
-  }
+    // RETRAITE COMPLÉMENTAIRE
+    getRetraiteComplementaire(): number {
+        // https://www.secu-independants.fr/cotisations/calcul-des-cotisations/taux-de-cotisations/
+        let montant = (Math.min(37960, this.revenus) * 7) / 100
 
-  // INVALIDITÉ DÉCÈS
-  getInvaliditeDeces(): number {
-    // https://www.secu-independants.fr/cotisations/calcul-des-cotisations/taux-de-cotisations/
-    const assiette = this.getAssietteInvaliditeDeces()
-    const taux = this.getTauxInvaliditeDeces()
+        if (this.revenus > 37960) {
+            montant += (Math.min(4 * this.PASS, this.revenus - 37960) * 8) / 100
+        }
 
-    return (assiette * taux) / 100
-  }
+        return montant
+    }
 
-  getAssietteInvaliditeDeces(): number {
-    const revenuMinimal = Math.max((11.5 * this.PASS) / 100, this.revenus)
-    return Math.min(this.PASS, revenuMinimal)
-  }
+    getAssietteRetraiteComplementaire(): number {
+        return Math.max((11.5 * this.PASS) / 100, this.revenus)
+    }
 
-  getTauxInvaliditeDeces(): number {
-    return 1.3
-  }
+    getTauxRetraiteComplementaire(): number {
+        return (this.getRetraiteComplementaire() / this.getAssietteRetraiteComplementaire()) * 100
+    }
+
+    // INVALIDITÉ DÉCÈS
+    getInvaliditeDeces(): number {
+        // https://www.secu-independants.fr/cotisations/calcul-des-cotisations/taux-de-cotisations/
+        const assiette = this.getAssietteInvaliditeDeces()
+        const taux = this.getTauxInvaliditeDeces()
+
+        return (assiette * taux) / 100
+    }
+
+    getAssietteInvaliditeDeces(): number {
+        const revenuMinimal = Math.max((11.5 * this.PASS) / 100, this.revenus)
+        return Math.min(this.PASS, revenuMinimal)
+    }
+
+    getTauxInvaliditeDeces(): number {
+        return 1.3
+    }
 }

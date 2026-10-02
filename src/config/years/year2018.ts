@@ -9,46 +9,46 @@ import type { YearConfig } from '@/types/year-config.types'
  * - Flat tax (PFU): Introduced in 2018 at 30% (12.8% IR + 17.2% social contributions)
  */
 export const year2018: YearConfig = {
-  year: 2018,
-  pass: 39732,
+    year: 2018,
+    pass: 39732,
 
-  taxBrackets: {
-    // Income tax (Impôt sur le Revenu)
-    ir: [
-      { min: 0, max: 9807, taux: 0 },
-      { min: 9807, max: 27086, taux: 0.14 },
-      { min: 27086, max: 72617, taux: 0.3 },
-      { min: 72617, max: 153783, taux: 0.41 },
-      { min: 153783, max: null, taux: 0.45 }
-    ],
+    taxBrackets: {
+        // Income tax (Impôt sur le Revenu)
+        ir: [
+            { min: 0, max: 9807, taux: 0 },
+            { min: 9807, max: 27086, taux: 0.14 },
+            { min: 27086, max: 72617, taux: 0.3 },
+            { min: 72617, max: 153783, taux: 0.41 },
+            { min: 153783, max: null, taux: 0.45 },
+        ],
 
-    // Corporate tax (Impôt sur les Sociétés)
-    // Change: Upper limit increased from 75,000 to 500,000
-    is: [
-      { min: 0, max: 38120, taux: 0.15 },
-      { min: 38120, max: 500000, taux: 0.28 },
-      { min: 500000, max: null, taux: 0.33 }
-    ]
-  },
+        // Corporate tax (Impôt sur les Sociétés)
+        // Change: Upper limit increased from 75,000 to 500,000
+        is: [
+            { min: 0, max: 38120, taux: 0.15 },
+            { min: 38120, max: 500000, taux: 0.28 },
+            { min: 500000, max: null, taux: 0.33 },
+        ],
+    },
 
-  rates: {
-    tauxCsgCrds: 0.172, // 17.2% CSG/CRDS
-    tauxCsgDeductible: 0.068, // 6.8% CSG deductible (5.1% until 2017)
-    tauxAbattementDividendes: 0.4, // 40% dividend abatement
-    tauxAbattementFrais: 0.1, // 10% professional expenses abatement
-    tauxAbattementBnc: 0.34, // 34% BNC abatement
-    tauxFlatTax: 0.3, // 30% flat tax (12.8% IR + 17.2% social)
-    tauxCsSalaire: 0.8185, // SASU employee contributions (~82%)
-    tauxAccreCsSalaire: 0.35 // SASU with ACCRE (~35%)
-  },
+    rates: {
+        tauxCsgCrds: 0.172, // 17.2% CSG/CRDS
+        tauxCsgDeductible: 0.068, // 6.8% CSG deductible (5.1% until 2017)
+        tauxAbattementDividendes: 0.4, // 40% dividend abatement
+        tauxAbattementFrais: 0.1, // 10% professional expenses abatement
+        tauxAbattementBnc: 0.34, // 34% BNC abatement
+        tauxFlatTax: 0.3, // 30% flat tax (12.8% IR + 17.2% social)
+        tauxCsSalaire: 0.8185, // SASU employee contributions (~82%)
+        tauxAccreCsSalaire: 0.35, // SASU with ACCRE (~35%)
+    },
 
-  features: {
-    hasPensionFundSelection: true, // CIPAV or SSI selection
-    hasFlatTax: true, // Flat tax (PFU) introduced in 2018
-    hasZfuExemption: true, // ZFU exemption available
-    hasAccre: true // ACCRE available
-  },
+    features: {
+        hasPensionFundSelection: true, // CIPAV or SSI selection
+        hasFlatTax: true, // Flat tax (PFU) introduced in 2018
+        hasZfuExemption: true, // ZFU exemption available
+        hasAccre: true, // ACCRE available
+    },
 
-  defaultForm: 'SASU', // 2018 default
-  defaultPensionFund: 'CIPAV' // Default choice
+    defaultForm: 'SASU', // 2018 default
+    defaultPensionFund: 'CIPAV', // Default choice
 }

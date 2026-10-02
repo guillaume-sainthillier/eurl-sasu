@@ -10,76 +10,76 @@ import type { PensionFundBase } from './pension-funds/PensionFundBase'
 import SSI from './pension-funds/SSI'
 
 export interface ExerciceParams {
-  capital: number
-  ca: number
-  charges: number
-  remuneration: number
-  dividendes: number
-  zfu: boolean
-  pfu: boolean
-  accre: boolean
-  autresRevenus: number
-  bnc: number
-  nbParts: number
-  nbMois: number
-  forme: 'EURL' | 'SASU'
-  caisseRetraite: 'CIPAV' | 'SSI'
+    capital: number
+    ca: number
+    charges: number
+    remuneration: number
+    dividendes: number
+    zfu: boolean
+    pfu: boolean
+    accre: boolean
+    autresRevenus: number
+    bnc: number
+    nbParts: number
+    nbMois: number
+    forme: 'EURL' | 'SASU'
+    caisseRetraite: 'CIPAV' | 'SSI'
 }
 
 export interface TrancheDetail {
-  value: number
-  min: number
-  max: number | null
-  taux: number
+    value: number
+    min: number
+    max: number | null
+    taux: number
 }
 
 export interface ExerciceResult {
-  remuneration: {
-    cotisationsSociales: number
+    remuneration: {
+        cotisationsSociales: number
+        brut: number
+        net: number
+        assietteIR: number
+        cs?: CotisationsSociales
+    }
+    dividendes: {
+        cotisationsSociales: number
+        brut: number
+        assietteIR: number
+        net: number
+        dividendes10?: {
+            brut: number
+            cotisationsSociales: number
+            net: number
+        }
+        dividendes90?: {
+            brut: number
+            cotisationsSociales: number
+            net: number
+        }
+    }
+    societe: {
+        ca: number
+        charges: number
+        brut: number
+        reste: number
+    }
+    IR: {
+        assiette: number
+        impot: number // Total: progressive scale + flat tax
+        impotBareme: number // Progressive scale only
+        impotPFU: number // Flat tax only (already deducted from dividendes.net)
+        tranches: TrancheDetail[]
+    }
+    IS: {
+        assiette: number
+        impot: number
+        exonerations: number
+        tranches: TrancheDetail[]
+    }
+    autresRevenus: number
+    bnc: number
     brut: number
     net: number
-    assietteIR: number
-    cs?: CotisationsSociales
-  }
-  dividendes: {
-    cotisationsSociales: number
-    brut: number
-    assietteIR: number
-    net: number
-    dividendes10?: {
-      brut: number
-      cotisationsSociales: number
-      net: number
-    }
-    dividendes90?: {
-      brut: number
-      cotisationsSociales: number
-      net: number
-    }
-  }
-  societe: {
-    ca: number
-    charges: number
-    brut: number
-    reste: number
-  }
-  IR: {
-    assiette: number
-    impot: number // Total: progressive scale + flat tax
-    impotBareme: number // Progressive scale only
-    impotPFU: number // Flat tax only (already deducted from dividendes.net)
-    tranches: TrancheDetail[]
-  }
-  IS: {
-    assiette: number
-    impot: number
-    exonerations: number
-    tranches: TrancheDetail[]
-  }
-  autresRevenus: number
-  bnc: number
-  brut: number
-  net: number
 }
 
 /**
@@ -88,231 +88,218 @@ export interface ExerciceResult {
  * Year-specific values (PASS, brackets, rates) come from the injected YearConfig
  */
 export default class ExerciceCalculator {
-  private PASS: number
-  private tauxAccreCsSalaire: number
-  private tauxCsSalaire: number
-  private plancherAccreLineaire: number
-  private tauxCsgCrds: number
-  private tauxAbattementDividendes: number
-  private tauxCsgDeductible: number
-  private tauxAbattementBnc: number
-  private tauxAbattementFrais: number
-  private tauxFlatTax: number
+    private PASS: number
+    private tauxAccreCsSalaire: number
+    private tauxCsSalaire: number
+    private plancherAccreLineaire: number
+    private tauxCsgCrds: number
+    private tauxAbattementDividendes: number
+    private tauxCsgDeductible: number
+    private tauxAbattementBnc: number
+    private tauxAbattementFrais: number
+    private tauxFlatTax: number
 
-  private impotSociete: ImpotSociete
-  private cotisations: CotisationsSociales
-  private impotRevenu: ImpotRevenu
+    private impotSociete: ImpotSociete
+    private cotisations: CotisationsSociales
+    private impotRevenu: ImpotRevenu
 
-  constructor(private yearConfig: YearConfig = getDefaultYearConfig()) {
-    const { rates } = yearConfig
-    this.PASS = yearConfig.pass
-    this.tauxAccreCsSalaire = rates.tauxAccreCsSalaire
-    this.tauxCsSalaire = rates.tauxCsSalaire
-    this.plancherAccreLineaire = yearConfig.pass * 0.75
-    this.tauxCsgCrds = rates.tauxCsgCrds
-    this.tauxAbattementDividendes = rates.tauxAbattementDividendes
-    this.tauxCsgDeductible = rates.tauxCsgDeductible
-    this.tauxAbattementBnc = rates.tauxAbattementBnc
-    this.tauxAbattementFrais = rates.tauxAbattementFrais
-    this.tauxFlatTax = rates.tauxFlatTax
+    constructor(private yearConfig: YearConfig = getDefaultYearConfig()) {
+        const { rates } = yearConfig
+        this.PASS = yearConfig.pass
+        this.tauxAccreCsSalaire = rates.tauxAccreCsSalaire
+        this.tauxCsSalaire = rates.tauxCsSalaire
+        this.plancherAccreLineaire = yearConfig.pass * 0.75
+        this.tauxCsgCrds = rates.tauxCsgCrds
+        this.tauxAbattementDividendes = rates.tauxAbattementDividendes
+        this.tauxCsgDeductible = rates.tauxCsgDeductible
+        this.tauxAbattementBnc = rates.tauxAbattementBnc
+        this.tauxAbattementFrais = rates.tauxAbattementFrais
+        this.tauxFlatTax = rates.tauxFlatTax
 
-    this.impotSociete = new ImpotSociete({ tranches: yearConfig.taxBrackets.is })
-    this.cotisations = this.isLegacy2017()
-      ? new CotisationsSociales2017()
-      : new CotisationsSociales()
-    this.impotRevenu = new ImpotRevenu({ tranches: yearConfig.taxBrackets.ir })
-  }
-
-  /**
-   * 2017 EURL contributions follow the CIPAV-only model of the original 2017 app
-   */
-  private isLegacy2017(): boolean {
-    return this.yearConfig.year <= 2017
-  }
-
-  private createCaisseRetraite(params: ExerciceParams, revenus: number): PensionFundBase {
-    if (this.isLegacy2017()) {
-      return new Cipav2017(revenus, this.PASS)
-    }
-    return params.caisseRetraite === 'CIPAV'
-      ? new Cipav(revenus, this.PASS)
-      : new SSI(revenus, this.PASS)
-  }
-
-  calculate(params: ExerciceParams): ExerciceResult {
-    const res: ExerciceResult = {
-      remuneration: {
-        cotisationsSociales: 0,
-        brut: 0,
-        net: 0,
-        assietteIR: 0
-      },
-      dividendes: {
-        cotisationsSociales: 0,
-        brut: 0,
-        assietteIR: 0,
-        net: 0
-      },
-      societe: {
-        ca: 0,
-        charges: 0,
-        brut: 0,
-        reste: 0
-      },
-      IR: {
-        assiette: 0,
-        impot: 0,
-        impotBareme: 0,
-        impotPFU: 0,
-        tranches: []
-      },
-      IS: {
-        assiette: 0,
-        impot: 0,
-        exonerations: 0,
-        tranches: []
-      },
-      autresRevenus: params.autresRevenus,
-      bnc: params.bnc,
-      brut: 0,
-      net: 0
+        this.impotSociete = new ImpotSociete({ tranches: yearConfig.taxBrackets.is })
+        this.cotisations = this.isLegacy2017() ? new CotisationsSociales2017() : new CotisationsSociales()
+        this.impotRevenu = new ImpotRevenu({ tranches: yearConfig.taxBrackets.ir })
     }
 
-    const { features } = this.yearConfig
-    const zfu = params.zfu && features.hasZfuExemption
-    const pfu = params.pfu && features.hasFlatTax
-
-    res.IR.assiette = 0
-    res.IS.assiette = 0
-    res.dividendes.brut = params.dividendes
-
-    // RÉMUNÉRATION
-    res.remuneration.net = params.remuneration
-    // Non-deductible CSG/CRDS paid by the company is taxable income for the manager
-    let csgCrdsNonDeductible = 0
-
-    if (params.forme === 'EURL') {
-      // EURL: Self-employed social contributions
-      this.cotisations.caisseRetraite = this.createCaisseRetraite(params, res.remuneration.net)
-
-      this.cotisations.remuneration = res.remuneration.net
-      this.cotisations.accre = params.accre
-      this.cotisations.PASS = this.PASS
-      res.remuneration.cs = this.cotisations
-      res.remuneration.cotisationsSociales = this.cotisations.getCotisations()
-      res.remuneration.brut = res.remuneration.net + res.remuneration.cotisationsSociales
-      csgCrdsNonDeductible = this.cotisations.getCsgCrdsNonDeductible()
+    /**
+     * 2017 EURL contributions follow the CIPAV-only model of the original 2017 app
+     */
+    private isLegacy2017(): boolean {
+        return this.yearConfig.year <= 2017
     }
 
-    if (params.forme === 'SASU') {
-      // SASU: Employee social contributions (simplified calculation)
-      const taux =
-        params.accre && res.remuneration.net < this.plancherAccreLineaire
-          ? this.tauxAccreCsSalaire
-          : this.tauxCsSalaire
-      res.remuneration.cotisationsSociales = res.remuneration.net * taux
-      res.remuneration.brut = res.remuneration.net + res.remuneration.cotisationsSociales
+    private createCaisseRetraite(params: ExerciceParams, revenus: number): PensionFundBase {
+        if (this.isLegacy2017()) {
+            return new Cipav2017(revenus, this.PASS)
+        }
+        return params.caisseRetraite === 'CIPAV' ? new Cipav(revenus, this.PASS) : new SSI(revenus, this.PASS)
     }
 
-    res.remuneration.assietteIR =
-      (res.remuneration.net + csgCrdsNonDeductible) * (1 - this.tauxAbattementFrais)
-    res.IR.assiette += res.remuneration.assietteIR
+    calculate(params: ExerciceParams): ExerciceResult {
+        const res: ExerciceResult = {
+            remuneration: {
+                cotisationsSociales: 0,
+                brut: 0,
+                net: 0,
+                assietteIR: 0,
+            },
+            dividendes: {
+                cotisationsSociales: 0,
+                brut: 0,
+                assietteIR: 0,
+                net: 0,
+            },
+            societe: {
+                ca: 0,
+                charges: 0,
+                brut: 0,
+                reste: 0,
+            },
+            IR: {
+                assiette: 0,
+                impot: 0,
+                impotBareme: 0,
+                impotPFU: 0,
+                tranches: [],
+            },
+            IS: {
+                assiette: 0,
+                impot: 0,
+                exonerations: 0,
+                tranches: [],
+            },
+            autresRevenus: params.autresRevenus,
+            bnc: params.bnc,
+            brut: 0,
+            net: 0,
+        }
 
-    // IMPÔT SUR LES SOCIÉTÉS (IS)
-    res.societe.ca = params.ca
-    res.societe.charges = params.charges
-    res.societe.brut = res.societe.ca - res.societe.charges - res.remuneration.brut
-    res.IS.assiette = res.societe.brut
+        const { features } = this.yearConfig
+        const zfu = params.zfu && features.hasZfuExemption
+        const pfu = params.pfu && features.hasFlatTax
 
-    this.impotSociete.benefice = res.IS.assiette
-    this.impotSociete.prorata = params.nbMois / 12 // Proratization
+        res.IR.assiette = 0
+        res.IS.assiette = 0
+        res.dividendes.brut = params.dividendes
 
-    if (!zfu) {
-      res.IS.exonerations = 0
-      res.IS.impot = this.impotSociete.getImpot()
-    } else {
-      res.IS.exonerations = this.impotSociete.getImpot()
-      res.IS.impot = 0 // ZFU exemption
-    }
+        // RÉMUNÉRATION
+        res.remuneration.net = params.remuneration
+        // Non-deductible CSG/CRDS paid by the company is taxable income for the manager
+        let csgCrdsNonDeductible = 0
 
-    res.IS.tranches = this.impotSociete.getTranches()
-    res.societe.reste = res.societe.brut - res.IS.impot - res.dividendes.brut
-    res.IR.impotPFU = 0
+        if (params.forme === 'EURL') {
+            // EURL: Self-employed social contributions
+            this.cotisations.caisseRetraite = this.createCaisseRetraite(params, res.remuneration.net)
 
-    // DIVIDENDES
-    if (params.dividendes > 0) {
-      if (params.forme === 'SASU') {
-        res.dividendes.cotisationsSociales = res.dividendes.brut * this.tauxCsgCrds
+            this.cotisations.remuneration = res.remuneration.net
+            this.cotisations.accre = params.accre
+            this.cotisations.PASS = this.PASS
+            res.remuneration.cs = this.cotisations
+            res.remuneration.cotisationsSociales = this.cotisations.getCotisations()
+            res.remuneration.brut = res.remuneration.net + res.remuneration.cotisationsSociales
+            csgCrdsNonDeductible = this.cotisations.getCsgCrdsNonDeductible()
+        }
 
-        if (!pfu) {
-          // Standard taxation (without flat tax)
-          res.dividendes.net = res.dividendes.brut - res.dividendes.cotisationsSociales
-          res.dividendes.assietteIR =
-            res.dividendes.brut * (1 - this.tauxAbattementDividendes) -
-            res.dividendes.brut * this.tauxCsgDeductible
+        if (params.forme === 'SASU') {
+            // SASU: Employee social contributions (simplified calculation)
+            const taux =
+                params.accre && res.remuneration.net < this.plancherAccreLineaire
+                    ? this.tauxAccreCsSalaire
+                    : this.tauxCsSalaire
+            res.remuneration.cotisationsSociales = res.remuneration.net * taux
+            res.remuneration.brut = res.remuneration.net + res.remuneration.cotisationsSociales
+        }
+
+        res.remuneration.assietteIR = (res.remuneration.net + csgCrdsNonDeductible) * (1 - this.tauxAbattementFrais)
+        res.IR.assiette += res.remuneration.assietteIR
+
+        // IMPÔT SUR LES SOCIÉTÉS (IS)
+        res.societe.ca = params.ca
+        res.societe.charges = params.charges
+        res.societe.brut = res.societe.ca - res.societe.charges - res.remuneration.brut
+        res.IS.assiette = res.societe.brut
+
+        this.impotSociete.benefice = res.IS.assiette
+        this.impotSociete.prorata = params.nbMois / 12 // Proratization
+
+        if (!zfu) {
+            res.IS.exonerations = 0
+            res.IS.impot = this.impotSociete.getImpot()
         } else {
-          // Flat tax (PFU)
-          res.IR.impotPFU = res.dividendes.brut * (this.tauxFlatTax - this.tauxCsgCrds) // 12.8% IR
-          res.dividendes.net =
-            res.dividendes.brut - res.dividendes.cotisationsSociales - res.IR.impotPFU
-          res.dividendes.assietteIR = 0 // Not subject to progressive tax
+            res.IS.exonerations = this.impotSociete.getImpot()
+            res.IS.impot = 0 // ZFU exemption
         }
-      } else {
-        // EURL: Distinction between < 10% and > 10% of capital
-        const dividendes10 = {
-          brut: Math.min(params.capital * 0.1, res.dividendes.brut),
-          cotisationsSociales: 0,
-          net: 0
+
+        res.IS.tranches = this.impotSociete.getTranches()
+        res.societe.reste = res.societe.brut - res.IS.impot - res.dividendes.brut
+        res.IR.impotPFU = 0
+
+        // DIVIDENDES
+        if (params.dividendes > 0) {
+            if (params.forme === 'SASU') {
+                res.dividendes.cotisationsSociales = res.dividendes.brut * this.tauxCsgCrds
+
+                if (!pfu) {
+                    // Standard taxation (without flat tax)
+                    res.dividendes.net = res.dividendes.brut - res.dividendes.cotisationsSociales
+                    res.dividendes.assietteIR =
+                        res.dividendes.brut * (1 - this.tauxAbattementDividendes) -
+                        res.dividendes.brut * this.tauxCsgDeductible
+                } else {
+                    // Flat tax (PFU)
+                    res.IR.impotPFU = res.dividendes.brut * (this.tauxFlatTax - this.tauxCsgCrds) // 12.8% IR
+                    res.dividendes.net = res.dividendes.brut - res.dividendes.cotisationsSociales - res.IR.impotPFU
+                    res.dividendes.assietteIR = 0 // Not subject to progressive tax
+                }
+            } else {
+                // EURL: Distinction between < 10% and > 10% of capital
+                const dividendes10 = {
+                    brut: Math.min(params.capital * 0.1, res.dividendes.brut),
+                    cotisationsSociales: 0,
+                    net: 0,
+                }
+                dividendes10.cotisationsSociales = dividendes10.brut * this.tauxCsgCrds
+                dividendes10.net = dividendes10.brut - dividendes10.cotisationsSociales
+                res.dividendes.dividendes10 = dividendes10
+
+                const dividendes90 = {
+                    brut: res.dividendes.brut - dividendes10.brut,
+                    cotisationsSociales: 0,
+                    net: 0,
+                }
+                dividendes90.cotisationsSociales = dividendes90.brut * 0.45
+                dividendes90.net = dividendes90.brut - dividendes90.cotisationsSociales
+                res.dividendes.dividendes90 = dividendes90
+
+                res.dividendes.assietteIR =
+                    dividendes10.brut * (1 - this.tauxAbattementDividendes) -
+                    dividendes10.brut * this.tauxCsgDeductible +
+                    (dividendes90.brut * (1 - this.tauxAbattementDividendes) -
+                        dividendes90.brut * this.tauxCsgDeductible)
+
+                res.dividendes.cotisationsSociales = dividendes10.cotisationsSociales + dividendes90.cotisationsSociales
+                res.dividendes.net = dividendes10.net + dividendes90.net
+            }
+
+            res.IR.assiette += res.dividendes.assietteIR
         }
-        dividendes10.cotisationsSociales = dividendes10.brut * this.tauxCsgCrds
-        dividendes10.net = dividendes10.brut - dividendes10.cotisationsSociales
-        res.dividendes.dividendes10 = dividendes10
 
-        const dividendes90 = {
-          brut: res.dividendes.brut - dividendes10.brut,
-          cotisationsSociales: 0,
-          net: 0
-        }
-        dividendes90.cotisationsSociales = dividendes90.brut * 0.45
-        dividendes90.net = dividendes90.brut - dividendes90.cotisationsSociales
-        res.dividendes.dividendes90 = dividendes90
+        // IMPÔT SUR LE REVENU (IR)
+        res.IR.assiette += params.autresRevenus * (1 - this.tauxAbattementFrais)
+        res.IR.assiette += params.bnc * (1 - this.tauxAbattementBnc)
 
-        res.dividendes.assietteIR =
-          dividendes10.brut * (1 - this.tauxAbattementDividendes) -
-          dividendes10.brut * this.tauxCsgDeductible +
-          (dividendes90.brut * (1 - this.tauxAbattementDividendes) -
-            dividendes90.brut * this.tauxCsgDeductible)
+        this.impotRevenu.revenu = res.IR.assiette
+        this.impotRevenu.nbParts = params.nbParts
+        res.IR.impotBareme = this.impotRevenu.getImpot()
+        res.IR.impot = res.IR.impotBareme + res.IR.impotPFU
+        res.IR.tranches = this.impotRevenu.getTranches()
 
-        res.dividendes.cotisationsSociales =
-          dividendes10.cotisationsSociales + dividendes90.cotisationsSociales
-        res.dividendes.net = dividendes10.net + dividendes90.net
-      }
+        // FINAL CALCULATIONS
+        res.brut = res.societe.ca - res.societe.charges - res.societe.reste + params.autresRevenus + params.bnc
 
-      res.IR.assiette += res.dividendes.assietteIR
+        // The flat tax is already deducted from dividendes.net
+        res.net = res.remuneration.net + res.dividendes.net + params.autresRevenus + params.bnc - res.IR.impotBareme
+
+        return res
     }
-
-    // IMPÔT SUR LE REVENU (IR)
-    res.IR.assiette += params.autresRevenus * (1 - this.tauxAbattementFrais)
-    res.IR.assiette += params.bnc * (1 - this.tauxAbattementBnc)
-
-    this.impotRevenu.revenu = res.IR.assiette
-    this.impotRevenu.nbParts = params.nbParts
-    res.IR.impotBareme = this.impotRevenu.getImpot()
-    res.IR.impot = res.IR.impotBareme + res.IR.impotPFU
-    res.IR.tranches = this.impotRevenu.getTranches()
-
-    // FINAL CALCULATIONS
-    res.brut =
-      res.societe.ca - res.societe.charges - res.societe.reste + params.autresRevenus + params.bnc
-
-    // The flat tax is already deducted from dividendes.net
-    res.net =
-      res.remuneration.net +
-      res.dividendes.net +
-      params.autresRevenus +
-      params.bnc -
-      res.IR.impotBareme
-
-    return res
-  }
 }
