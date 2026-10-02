@@ -25,7 +25,8 @@ onMounted(() => {
         <div class="flex justify-between items-center mb-4">
           <div class="flex-1"></div>
           <h1 class="flex-1 text-center text-4xl font-light">
-            <span class="text-blue-600">EURL</span> / <span class="text-green-600">SASU</span>
+            <span class="text-blue-600">EURL</span>
+            / <span class="text-green-600">SASU</span>
           </h1>
           <div class="flex-1 flex justify-end">
             <HelpModal />
@@ -61,4 +62,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-

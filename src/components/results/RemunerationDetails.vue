@@ -67,7 +67,9 @@ const showCotisationsDetail = computed(() => {
             {{ formatCurrency(result.remuneration.cs!.getAssietteMaladie()) }}
           </div>
           <div class="text-gray-600">Taux :</div>
-          <div class="font-mono text-right">{{ formatPercent(result.remuneration.cs!.getTauxMaladie()) }}</div>
+          <div class="font-mono text-right">
+            {{ formatPercent(result.remuneration.cs!.getTauxMaladie()) }}
+          </div>
           <div class="text-gray-600">Montant :</div>
           <div class="font-mono text-right font-semibold">
             {{ formatCurrency(result.remuneration.cs!.getMaladie()) }}
@@ -84,7 +86,9 @@ const showCotisationsDetail = computed(() => {
             {{ formatCurrency(result.remuneration.cs!.getAssietteMaladie2()) }}
           </div>
           <div class="text-gray-600">Taux :</div>
-          <div class="font-mono text-right">{{ formatPercent(result.remuneration.cs!.getTauxMaladie2()) }}</div>
+          <div class="font-mono text-right">
+            {{ formatPercent(result.remuneration.cs!.getTauxMaladie2()) }}
+          </div>
           <div class="text-gray-600">Montant :</div>
           <div class="font-mono text-right font-semibold">
             {{ formatCurrency(result.remuneration.cs!.getMaladie2()) }}
@@ -155,7 +159,9 @@ const showCotisationsDetail = computed(() => {
         <div class="grid grid-cols-2 gap-2 text-xs">
           <div class="text-gray-600">Taux :</div>
           <div class="font-mono text-right">
-            {{ formatPercent(result.remuneration.cs!.caisseRetraite.getTauxRetraiteComplementaire()) }}
+            {{
+              formatPercent(result.remuneration.cs!.caisseRetraite.getTauxRetraiteComplementaire())
+            }}
           </div>
           <div class="text-gray-600">Montant :</div>
           <div class="font-mono text-right font-semibold">
@@ -190,7 +196,9 @@ const showCotisationsDetail = computed(() => {
             {{ formatCurrency(result.remuneration.cs!.getCsgCrdsDeductible()) }}
           </div>
           <div class="text-gray-600">
-            Non déductible ({{ formatPercent(result.remuneration.cs!.getTauxCsgCrdsNonDeductible()) }}) :
+            Non déductible ({{
+              formatPercent(result.remuneration.cs!.getTauxCsgCrdsNonDeductible())
+            }}) :
           </div>
           <div class="font-mono text-right">
             {{ formatCurrency(result.remuneration.cs!.getCsgCrdsNonDeductible()) }}
@@ -203,7 +211,10 @@ const showCotisationsDetail = computed(() => {
       </div>
 
       <!-- ACCRE -->
-      <div v-if="result.remuneration.cs!.getExonerationAccre() > 0" class="p-3 bg-green-50 rounded text-sm">
+      <div
+        v-if="result.remuneration.cs!.getExonerationAccre() > 0"
+        class="p-3 bg-green-50 rounded text-sm"
+      >
         <div class="font-medium text-gray-700 mb-2">Exonération ACCRE</div>
         <div class="grid grid-cols-2 gap-2 text-xs">
           <div class="text-gray-600">Montant :</div>
@@ -217,7 +228,9 @@ const showCotisationsDetail = computed(() => {
     <!-- SASU: Simplified -->
     <div v-else class="p-4 bg-gray-50 rounded text-sm">
       <p class="text-gray-600 mb-2">
-        En SASU, les cotisations sociales sont calculées de manière simplifiée ({{ formatRate(yearConfig?.rates.tauxCsSalaire) }} du net, ou
+        En SASU, les cotisations sociales sont calculées de manière simplifiée ({{
+          formatRate(yearConfig?.rates.tauxCsSalaire)
+        }} du net, ou
         {{ formatRate(yearConfig?.rates.tauxAccreCsSalaire) }} avec ACCRE).
       </p>
       <div class="grid grid-cols-2 gap-2 text-xs">

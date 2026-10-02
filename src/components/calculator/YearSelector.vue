@@ -69,7 +69,8 @@ function handleYearChange(event: Event) {
     </div>
 
     <div v-if="yearConfig" class="mt-4 p-3 bg-gray-50 rounded text-sm text-gray-600">
-      <strong>Année {{ yearConfig.year }}</strong> - Régime par défaut :
+      <strong>Année {{ yearConfig.year }}</strong>
+      - Régime par défaut :
       <span class="font-semibold text-blue-600">{{ yearConfig.defaultForm }}</span>
     </div>
   </div>

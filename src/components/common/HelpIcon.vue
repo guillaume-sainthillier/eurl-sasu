@@ -37,14 +37,19 @@ const content = helpContent[props.fieldKey]
       <div class="space-y-3 text-sm">
         <p class="text-gray-700">{{ content.description }}</p>
 
-        <div v-if="content.additionalInfo" class="text-gray-600 bg-blue-50 p-3 rounded flex gap-2 items-center">
+        <div
+          v-if="content.additionalInfo"
+          class="text-gray-600 bg-blue-50 p-3 rounded flex gap-2 items-center"
+        >
           <Lightbulb :size="16" class="text-blue-600 flex-shrink-0 mt-0.5" />
           <span>{{ content.additionalInfo }}</span>
         </div>
       </div>
 
       <template #footer>
-        <button type="button" class="btn btn-primary ml-auto" @click="showModal = false">Fermer</button>
+        <button type="button" class="btn btn-primary ml-auto" @click="showModal = false">
+          Fermer
+        </button>
       </template>
     </BaseModal>
   </div>

@@ -67,7 +67,9 @@ watch(
       await nextTick()
       // Focus the field marked autofocus, otherwise the first focusable element
       const target =
-        panel.value?.querySelector<HTMLElement>('[autofocus]') ?? focusableElements()[0] ?? panel.value
+        panel.value?.querySelector<HTMLElement>('[autofocus]') ??
+        focusableElements()[0] ??
+        panel.value
       target?.focus()
     } else {
       document.body.style.overflow = ''
@@ -109,7 +111,12 @@ onBeforeUnmount(() => {
         >
           <div class="flex items-start justify-between gap-4 border-b border-gray-200 px-6 py-4">
             <h2 :id="titleId" class="text-lg font-semibold text-gray-800">{{ title }}</h2>
-            <button type="button" class="btn-icon -mr-2 -mt-1" aria-label="Fermer" @click="emit('close')">
+            <button
+              type="button"
+              class="btn-icon -mr-2 -mt-1"
+              aria-label="Fermer"
+              @click="emit('close')"
+            >
               <X :size="20" />
             </button>
           </div>

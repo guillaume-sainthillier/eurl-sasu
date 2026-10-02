@@ -38,7 +38,9 @@ defineProps<Props>()
     </div>
 
     <!-- EURL: 10% / 90% split -->
-    <div v-if="forme === 'EURL' && result.dividendes.dividendes10 && result.dividendes.dividendes90">
+    <div
+      v-if="forme === 'EURL' && result.dividendes.dividendes10 && result.dividendes.dividendes90"
+    >
       <h4 class="text-sm font-medium text-gray-700 border-b pb-2 mb-3">
         Répartition EURL (10% capital / 90%)
       </h4>
@@ -46,9 +48,7 @@ defineProps<Props>()
       <div class="space-y-3">
         <!-- First 10% (based on capital) -->
         <div class="p-3 bg-gray-50 rounded text-sm">
-          <div class="font-medium text-gray-700 mb-2">
-            Première tranche (10% du capital)
-          </div>
+          <div class="font-medium text-gray-700 mb-2">Première tranche (10% du capital)</div>
           <div class="grid grid-cols-2 gap-2 text-xs">
             <div class="text-gray-600">Brut :</div>
             <div class="font-mono text-right">
@@ -94,7 +94,8 @@ defineProps<Props>()
       <div class="mt-4 p-3 bg-blue-50 rounded text-sm">
         <div class="font-medium text-gray-700 mb-2">Assiette IR (après abattement 40%)</div>
         <div class="text-xs text-gray-600">
-          Les dividendes sont soumis au barème progressif de l'IR après un abattement de 40% et déduction de la CSG déductible (5.1%)
+          Les dividendes sont soumis au barème progressif de l'IR après un abattement de 40% et
+          déduction de la CSG déductible (5.1%)
         </div>
         <div class="mt-2 font-mono text-right font-semibold">
           {{ formatCurrency(result.dividendes.assietteIR) }}
@@ -124,9 +125,7 @@ defineProps<Props>()
 
         <!-- PFU (Flat Tax) -->
         <div v-if="hasPFU" class="p-3 bg-yellow-50 rounded text-sm">
-          <div class="font-medium text-gray-700 mb-2">
-            Prélèvement Forfaitaire Unique (PFU)
-          </div>
+          <div class="font-medium text-gray-700 mb-2">Prélèvement Forfaitaire Unique (PFU)</div>
           <div class="grid grid-cols-2 gap-2 text-xs">
             <div class="text-gray-600">Taux IR (12.8%) :</div>
             <div class="font-mono text-right text-red-600">
@@ -144,9 +143,7 @@ defineProps<Props>()
 
         <!-- Standard (barème progressif) -->
         <div v-else class="p-3 bg-blue-50 rounded text-sm">
-          <div class="font-medium text-gray-700 mb-2">
-            Assiette IR (barème progressif)
-          </div>
+          <div class="font-medium text-gray-700 mb-2">Assiette IR (barème progressif)</div>
           <div class="text-xs text-gray-600 mb-2">
             Dividendes après abattement de 40% et déduction CSG (5.1%)
           </div>

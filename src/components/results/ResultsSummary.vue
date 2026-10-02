@@ -77,13 +77,20 @@ const effectiveTaxRate = computed(() => {
             <!-- Remuneration -->
             <div class="flex justify-between p-2 bg-gray-50 rounded">
               <span class="text-gray-600">Rémunération nette</span>
-              <span class="font-mono font-semibold">{{ formatCurrency(result.remuneration.net) }}</span>
+              <span class="font-mono font-semibold">{{
+                formatCurrency(result.remuneration.net)
+              }}</span>
             </div>
 
             <!-- Dividends -->
-            <div v-if="result.dividendes.brut > 0" class="flex justify-between p-2 bg-gray-50 rounded">
+            <div
+              v-if="result.dividendes.brut > 0"
+              class="flex justify-between p-2 bg-gray-50 rounded"
+            >
               <span class="text-gray-600">Dividendes nets</span>
-              <span class="font-mono font-semibold">{{ formatCurrency(result.dividendes.net) }}</span>
+              <span class="font-mono font-semibold">{{
+                formatCurrency(result.dividendes.net)
+              }}</span>
             </div>
 
             <!-- IS -->
@@ -129,10 +136,7 @@ const effectiveTaxRate = computed(() => {
 
     <!-- Detailed Breakdown Components -->
     <div v-if="result && showDetailedBreakdown" id="detailed-breakdown" class="space-y-6">
-      <RemunerationDetails
-        :result="result"
-        :forme="forme"
-      />
+      <RemunerationDetails :result="result" :forme="forme" />
 
       <DividendesDetails
         v-if="result.dividendes.brut > 0"
@@ -141,15 +145,9 @@ const effectiveTaxRate = computed(() => {
         :has-p-f-u="Boolean(params.pfu.value)"
       />
 
-      <ImpotSocieteDetails
-        :result="result"
-        :has-z-f-u="Boolean(params.zfu.value)"
-      />
+      <ImpotSocieteDetails :result="result" :has-z-f-u="Boolean(params.zfu.value)" />
 
-      <ImpotRevenuDetails
-        :result="result"
-        :nb-parts="params.nbParts.value"
-      />
+      <ImpotRevenuDetails :result="result" :nb-parts="params.nbParts.value" />
     </div>
   </div>
 </template>

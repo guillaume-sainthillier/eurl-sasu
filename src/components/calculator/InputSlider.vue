@@ -51,7 +51,7 @@ const formattedValue = computed(() => {
         :step="step"
         class="form-range flex-1"
         :aria-label="label"
-      />
+      >
       <input
         :id="inputId"
         v-model.number="localValue"
@@ -60,7 +60,7 @@ const formattedValue = computed(() => {
         :max="max"
         :step="step"
         class="form-control w-32 text-sm"
-      />
+      >
     </div>
   </div>
 </template>

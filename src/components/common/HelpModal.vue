@@ -24,7 +24,12 @@ defineExpose({
       Aide
     </button>
 
-    <BaseModal :open="showModal" title="Aide et Documentation" size="4xl" @close="showModal = false">
+    <BaseModal
+      :open="showModal"
+      title="Aide et Documentation"
+      size="4xl"
+      @close="showModal = false"
+    >
       <div class="space-y-6 text-sm">
         <!-- General Info -->
         <section>
@@ -83,16 +88,16 @@ defineExpose({
             <div>
               <dt class="font-medium text-gray-800">Dividendes brut</dt>
               <dd class="text-gray-600 mt-1">
-                Montant des dividendes que vous souhaitez vous distribuer. Les cotisations
-                sociales et prélèvements fiscaux seront calculés selon votre forme juridique.
+                Montant des dividendes que vous souhaitez vous distribuer. Les cotisations sociales
+                et prélèvements fiscaux seront calculés selon votre forme juridique.
               </dd>
             </div>
 
             <div>
               <dt class="font-medium text-gray-800">Autres revenus</dt>
               <dd class="text-gray-600 mt-1">
-                Revenus salariaux ou autres revenus imposables perçus hors de votre société
-                (salaire d'un autre emploi, pensions, etc.). Impacte le calcul de l'IR.
+                Revenus salariaux ou autres revenus imposables perçus hors de votre société (salaire
+                d'un autre emploi, pensions, etc.). Impacte le calcul de l'IR.
               </dd>
             </div>
 
@@ -107,8 +112,8 @@ defineExpose({
             <div>
               <dt class="font-medium text-gray-800">Nombre de parts fiscales</dt>
               <dd class="text-gray-600 mt-1">
-                Nombre de parts de votre foyer fiscal (célibataire: 1, couple: 2, enfants: +0.5
-                par enfant jusqu'au 2ème, +1 à partir du 3ème). Affecte le calcul de l'IR.
+                Nombre de parts de votre foyer fiscal (célibataire: 1, couple: 2, enfants: +0.5 par
+                enfant jusqu'au 2ème, +1 à partir du 3ème). Affecte le calcul de l'IR.
               </dd>
             </div>
           </dl>
@@ -121,16 +126,16 @@ defineExpose({
             <div>
               <dt class="font-medium text-gray-800">ACCRE</dt>
               <dd class="text-gray-600 mt-1">
-                Aide à la Création ou Reprise d'Entreprise. Réduit les cotisations sociales
-                pendant la première année d'activité.
+                Aide à la Création ou Reprise d'Entreprise. Réduit les cotisations sociales pendant
+                la première année d'activité.
               </dd>
             </div>
 
             <div>
               <dt class="font-medium text-gray-800">Caisse de retraite (EURL 2018+)</dt>
               <dd class="text-gray-600 mt-1">
-                Choix entre CIPAV (professions libérales) et SSI (commerçants/artisans). Les
-                taux de cotisation diffèrent selon la caisse.
+                Choix entre CIPAV (professions libérales) et SSI (commerçants/artisans). Les taux de
+                cotisation diffèrent selon la caisse.
               </dd>
             </div>
 
@@ -145,8 +150,8 @@ defineExpose({
             <div>
               <dt class="font-medium text-gray-800">ZFU (2018+)</dt>
               <dd class="text-gray-600 mt-1">
-                Zone Franche Urbaine. Exonération partielle ou totale d'Impôt sur les Sociétés
-                selon l'implantation géographique.
+                Zone Franche Urbaine. Exonération partielle ou totale d'Impôt sur les Sociétés selon
+                l'implantation géographique.
               </dd>
             </div>
           </dl>
@@ -157,7 +162,9 @@ defineExpose({
           <h3 class="text-lg font-semibold text-gray-800 mb-3">EURL vs SASU</h3>
           <div class="space-y-3">
             <div>
-              <h4 class="font-medium text-gray-800">EURL (Entreprise Unipersonnelle à Responsabilité Limitée)</h4>
+              <h4 class="font-medium text-gray-800">
+                EURL (Entreprise Unipersonnelle à Responsabilité Limitée)
+              </h4>
               <ul class="list-disc list-inside text-gray-600 mt-1 space-y-1">
                 <li>Gérant majoritaire = Travailleur Non Salarié (TNS)</li>
                 <li>Cotisations sociales ~45% du net sur la rémunération</li>
@@ -167,7 +174,9 @@ defineExpose({
             </div>
 
             <div>
-              <h4 class="font-medium text-gray-800">SASU (Société par Actions Simplifiée Unipersonnelle)</h4>
+              <h4 class="font-medium text-gray-800">
+                SASU (Société par Actions Simplifiée Unipersonnelle)
+              </h4>
               <ul class="list-disc list-inside text-gray-600 mt-1 space-y-1">
                 <li>Président = Assimilé Salarié</li>
                 <li>Cotisations sociales ~82% du net sur la rémunération (~89% en 2017)</li>
@@ -183,17 +192,16 @@ defineExpose({
           <h3 class="text-lg font-semibold text-gray-800 mb-3">Détails des calculs</h3>
           <div class="text-gray-600 space-y-2">
             <p>
-              <strong>IS (Impôt sur les Sociétés):</strong> Calculé sur le bénéfice de
-              l'entreprise après déduction des charges, rémunération et cotisations sociales.
+              <strong>IS (Impôt sur les Sociétés):</strong>
+              Calculé sur le bénéfice de l'entreprise après déduction des charges, rémunération et
+              cotisations sociales.
             </p>
             <p>
-              <strong>IR (Impôt sur le Revenu):</strong> Calculé sur l'ensemble de vos revenus
-              imposables (rémunération + dividendes + autres revenus + BNC) selon le barème
-              progressif avec le quotient familial.
+              <strong>IR (Impôt sur le Revenu):</strong>
+              Calculé sur l'ensemble de vos revenus imposables (rémunération + dividendes + autres
+              revenus + BNC) selon le barème progressif avec le quotient familial.
             </p>
-            <p>
-              <strong>Revenu net total:</strong> CA - Charges - Cotisations sociales - IS - IR
-            </p>
+            <p><strong>Revenu net total:</strong> CA - Charges - Cotisations sociales - IS - IR</p>
           </div>
         </section>
 
@@ -201,16 +209,24 @@ defineExpose({
         <section>
           <h3 class="text-lg font-semibold text-gray-800 mb-3">Fonctionnalités</h3>
           <ul class="list-disc list-inside text-gray-600 space-y-1">
-            <li><strong>Sauvegardes:</strong> Enregistrez vos scénarios avec un nom personnalisé</li>
+            <li>
+              <strong>Sauvegardes:</strong>
+              Enregistrez vos scénarios avec un nom personnalisé
+            </li>
             <li><strong>Export/Import:</strong> Partagez vos sauvegardes au format JSON</li>
             <li><strong>Partage de lien:</strong> Générez un lien URL avec tous vos paramètres</li>
-            <li><strong>Détails complets:</strong> Consultez le détail de chaque calcul (IS, IR, cotisations)</li>
+            <li>
+              <strong>Détails complets:</strong>
+              Consultez le détail de chaque calcul (IS, IR, cotisations)
+            </li>
           </ul>
         </section>
       </div>
 
       <template #footer>
-        <button type="button" class="btn btn-primary ml-auto" @click="showModal = false">Fermer</button>
+        <button type="button" class="btn btn-primary ml-auto" @click="showModal = false">
+          Fermer
+        </button>
       </template>
     </BaseModal>
   </div>

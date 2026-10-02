@@ -250,7 +250,11 @@ function processFile(file: File) {
     </div>
 
     <!-- Save Dialog -->
-    <BaseModal :open="showSaveDialog" title="Sauvegarder l'état actuel" @close="showSaveDialog = false">
+    <BaseModal
+      :open="showSaveDialog"
+      title="Sauvegarder l'état actuel"
+      @close="showSaveDialog = false"
+    >
       <label for="save-name-input" class="block text-sm font-medium text-gray-700 mb-2">
         Nom de la sauvegarde
       </label>
@@ -262,7 +266,7 @@ function processFile(file: File) {
         class="form-control"
         @keyup.enter="handleSave"
         autofocus
-      />
+      >
 
       <p class="text-xs text-gray-600 mt-2">
         Si une sauvegarde avec ce nom existe déjà, elle sera écrasée.
@@ -311,7 +315,7 @@ function processFile(file: File) {
             accept=".json"
             @change="handleFileSelect"
             class="peer sr-only"
-          />
+          >
           <label
             for="import-file-input"
             class="btn btn-primary btn-sm peer-focus-visible:ring-2 peer-focus-visible:ring-blue-500 peer-focus-visible:ring-offset-2"

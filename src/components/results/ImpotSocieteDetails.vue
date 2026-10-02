@@ -12,9 +12,7 @@ defineProps<Props>()
 
 <template>
   <div class="bg-white rounded-lg shadow-md p-6">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4">
-      Impôt sur les Sociétés (IS)
-    </h3>
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Impôt sur les Sociétés (IS)</h3>
 
     <!-- Summary -->
     <div class="grid grid-cols-2 gap-4 mb-6 p-4 bg-orange-50 rounded-lg">
@@ -34,9 +32,7 @@ defineProps<Props>()
 
     <!-- ZFU Exemption -->
     <div v-if="hasZFU && result.IS.exonerations > 0" class="mb-4 p-3 bg-green-50 rounded text-sm">
-      <div class="font-medium text-green-700 mb-2">
-        ✓ Exonération ZFU (Zone Franche Urbaine)
-      </div>
+      <div class="font-medium text-green-700 mb-2">✓ Exonération ZFU (Zone Franche Urbaine)</div>
       <div class="grid grid-cols-2 gap-2 text-xs">
         <div class="text-gray-600">IS calculé :</div>
         <div class="font-mono text-right text-gray-500 line-through">
@@ -102,17 +98,13 @@ defineProps<Props>()
     <!-- Company Remaining Profit -->
     <div class="mt-4 p-4 bg-blue-50 rounded text-sm">
       <div class="font-medium text-gray-700 mb-2">Reste dans la société</div>
-      <div class="text-xs text-gray-600 mb-2">
-        Bénéfice - IS - Dividendes distribués
-      </div>
+      <div class="text-xs text-gray-600 mb-2">Bénéfice - IS - Dividendes distribués</div>
       <div class="grid grid-cols-2 gap-2 text-xs">
         <div class="text-gray-600">Bénéfice :</div>
         <div class="font-mono text-right">{{ formatCurrency(result.societe.brut) }}</div>
 
         <div class="text-gray-600">IS payé :</div>
-        <div class="font-mono text-right text-red-600">
-          -{{ formatCurrency(result.IS.impot) }}
-        </div>
+        <div class="font-mono text-right text-red-600">-{{ formatCurrency(result.IS.impot) }}</div>
 
         <div class="text-gray-600">Dividendes distribués :</div>
         <div class="font-mono text-right text-red-600">

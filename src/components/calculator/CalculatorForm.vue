@@ -26,7 +26,9 @@ function toggleCheckbox(paramName: string) {
 
     <!-- Company Form Selection -->
     <fieldset class="mb-6 p-4 bg-gray-50 rounded-lg">
-      <legend class="float-left w-full text-sm font-medium text-gray-700 mb-2">Forme juridique</legend>
+      <legend class="float-left w-full text-sm font-medium text-gray-700 mb-2">
+        Forme juridique
+      </legend>
       <div class="clear-left flex gap-4">
         <label for="forme-eurl" class="form-check-label">
           <input
@@ -37,7 +39,7 @@ function toggleCheckbox(paramName: string) {
             :checked="isEURL"
             @change="updateParam('forme', 'EURL')"
             class="form-check"
-          />
+          >
           <span>EURL</span>
         </label>
         <label for="forme-sasu" class="form-check-label">
@@ -49,7 +51,7 @@ function toggleCheckbox(paramName: string) {
             :checked="isSASU"
             @change="updateParam('forme', 'SASU')"
             class="form-check"
-          />
+          >
           <span>SASU</span>
         </label>
       </div>
@@ -172,14 +174,18 @@ function toggleCheckbox(paramName: string) {
       <h3 class="text-lg font-medium text-gray-700 mb-3">Options</h3>
 
       <!-- ACCRE -->
-      <label v-if="availableFeatures?.hasAccre" for="accre-checkbox" class="form-check-label flex w-fit">
+      <label
+        v-if="availableFeatures?.hasAccre"
+        for="accre-checkbox"
+        class="form-check-label flex w-fit"
+      >
         <input
           id="accre-checkbox"
           type="checkbox"
           :checked="Boolean(params.accre.value)"
           @change="toggleCheckbox('accre')"
           class="form-check"
-        />
+        >
         <span class="flex items-center">
           ACCRE (Aide à la Création ou Reprise d'Entreprise)
           <HelpIcon field-key="accre" />
@@ -202,7 +208,7 @@ function toggleCheckbox(paramName: string) {
               :checked="params.caisseRetraite.value === 'CIPAV'"
               @change="updateParam('caisseRetraite', 'CIPAV')"
               class="form-check"
-            />
+            >
             <span class="text-sm">CIPAV</span>
           </label>
           <label for="caisse-ssi" class="form-check-label">
@@ -214,7 +220,7 @@ function toggleCheckbox(paramName: string) {
               :checked="params.caisseRetraite.value === 'SSI'"
               @change="updateParam('caisseRetraite', 'SSI')"
               class="form-check"
-            />
+            >
             <span class="text-sm">SSI</span>
           </label>
         </div>
@@ -228,7 +234,7 @@ function toggleCheckbox(paramName: string) {
           :checked="Boolean(params.pfu.value)"
           @change="toggleCheckbox('pfu')"
           class="form-check"
-        />
+        >
         <span class="flex items-center">
           Flat Tax (PFU - 30%)
           <HelpIcon field-key="pfu" />
@@ -236,14 +242,18 @@ function toggleCheckbox(paramName: string) {
       </label>
 
       <!-- ZFU (2018+) -->
-      <label v-if="availableFeatures?.hasZfuExemption" for="zfu-checkbox" class="form-check-label flex w-fit">
+      <label
+        v-if="availableFeatures?.hasZfuExemption"
+        for="zfu-checkbox"
+        class="form-check-label flex w-fit"
+      >
         <input
           id="zfu-checkbox"
           type="checkbox"
           :checked="Boolean(params.zfu.value)"
           @change="toggleCheckbox('zfu')"
           class="form-check"
-        />
+        >
         <span class="flex items-center">
           ZFU (Zone Franche Urbaine)
           <HelpIcon field-key="zfu" />

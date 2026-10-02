@@ -12,9 +12,7 @@ defineProps<Props>()
 
 <template>
   <div class="bg-white rounded-lg shadow-md p-6">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4">
-      Impôt sur le Revenu (IR)
-    </h3>
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Impôt sur le Revenu (IR)</h3>
 
     <!-- Summary -->
     <div class="grid grid-cols-2 gap-4 mb-6 p-4 bg-indigo-50 rounded-lg">
@@ -48,12 +46,16 @@ defineProps<Props>()
             {{ formatCurrency(result.remuneration.assietteIR) }}
           </div>
 
-          <div v-if="result.dividendes.assietteIR > 0" class="text-gray-600">Dividendes (assiette) :</div>
+          <div v-if="result.dividendes.assietteIR > 0" class="text-gray-600">
+            Dividendes (assiette) :
+          </div>
           <div v-if="result.dividendes.assietteIR > 0" class="font-mono text-right">
             {{ formatCurrency(result.dividendes.assietteIR) }}
           </div>
 
-          <div v-if="result.autresRevenus > 0" class="text-gray-600">Autres revenus (assiette) :</div>
+          <div v-if="result.autresRevenus > 0" class="text-gray-600">
+            Autres revenus (assiette) :
+          </div>
           <div v-if="result.autresRevenus > 0" class="font-mono text-right">
             {{ formatCurrency(result.autresRevenus * 0.9) }}
           </div>
@@ -78,8 +80,9 @@ defineProps<Props>()
       </h4>
 
       <div class="text-xs text-gray-600 mb-2 p-2 bg-blue-50 rounded">
-        Le revenu est divisé par {{ nbParts }} part{{ nbParts > 1 ? 's' : '' }}, puis l'IR calculé est multiplié par {{ nbParts }}.
-        Revenu par part : {{ formatCurrency(result.IR.assiette / nbParts) }}
+        Le revenu est divisé par {{ nbParts }} part{{ nbParts > 1 ? 's' : '' }}, puis l'IR calculé
+        est multiplié par {{ nbParts }}. Revenu par part :
+        {{ formatCurrency(result.IR.assiette / nbParts) }}
       </div>
 
       <div
@@ -110,12 +113,8 @@ defineProps<Props>()
 
       <!-- PFU (if applicable) -->
       <div v-if="result.IR.impotPFU > 0" class="p-3 bg-yellow-50 rounded text-sm">
-        <div class="font-medium text-gray-700 mb-2">
-          + Prélèvement Forfaitaire Unique (PFU)
-        </div>
-        <div class="text-xs text-gray-600 mb-2">
-          IR flat tax sur dividendes (12.8%)
-        </div>
+        <div class="font-medium text-gray-700 mb-2">+ Prélèvement Forfaitaire Unique (PFU)</div>
+        <div class="text-xs text-gray-600 mb-2">IR flat tax sur dividendes (12.8%)</div>
         <div class="font-mono text-right font-semibold text-orange-600">
           {{ formatCurrency(result.IR.impotPFU) }}
         </div>
@@ -135,11 +134,11 @@ defineProps<Props>()
     <!-- Effective Tax Rate -->
     <div class="mt-4 p-3 bg-gray-50 rounded text-sm">
       <div class="font-medium text-gray-700 mb-1">Taux moyen d'imposition</div>
-      <div class="text-xs text-gray-600 mb-2">
-        IR au barème / Revenu imposable (hors PFU)
-      </div>
+      <div class="text-xs text-gray-600 mb-2">IR au barème / Revenu imposable (hors PFU)</div>
       <div class="text-2xl font-semibold text-indigo-700">
-        {{ result.IR.assiette > 0 ? ((result.IR.impotBareme / result.IR.assiette) * 100).toFixed(2) : 0 }} %
+        {{
+          result.IR.assiette > 0 ? ((result.IR.impotBareme / result.IR.assiette) * 100).toFixed(2) : 0
+        }} %
       </div>
     </div>
   </div>

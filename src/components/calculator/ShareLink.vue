@@ -48,7 +48,7 @@ async function handleCopy() {
           readonly
           class="form-control flex-1 text-sm font-mono"
           @focus="($event.target as HTMLInputElement).select()"
-        />
+        >
         <button
           type="button"
           class="btn whitespace-nowrap"
@@ -60,7 +60,9 @@ async function handleCopy() {
           {{ copied ? 'Copié !' : 'Copier' }}
         </button>
       </div>
-      <p class="sr-only" aria-live="polite">{{ copied ? 'Lien copié dans le presse-papiers' : '' }}</p>
+      <p class="sr-only" aria-live="polite">
+        {{ copied ? 'Lien copié dans le presse-papiers' : '' }}
+      </p>
 
       <p class="text-xs text-gray-500 mt-3">
         Le lien contient tous vos paramètres actuels (année, CA, charges, rémunération, etc.)
