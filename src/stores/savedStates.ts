@@ -33,7 +33,7 @@ export const useSavedStatesStore = defineStore('savedStates', () => {
       localStorage.setItem(test, test)
       localStorage.removeItem(test)
       return true
-    } catch (e) {
+    } catch {
       return false
     }
   }
@@ -67,7 +67,7 @@ export const useSavedStatesStore = defineStore('savedStates', () => {
     }
   }
 
-  function saveState(name: string, year: number, params: any) {
+  function saveState(name: string, year: number, params: SavedState['params']) {
     if (!hasLocalStorage()) {
       return
     }

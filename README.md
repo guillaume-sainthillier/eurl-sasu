@@ -4,12 +4,16 @@ Calculateur de cotisations sociales et fiscales pour EURL et SASU (2017-2018).
 
 Compare les revenus nets entre EURL et SASU en tenant compte de toutes les charges sociales et fiscales françaises.
 
+> **Périmètre** : seules les années fiscales **2017 et 2018** sont couvertes (barèmes IR/IS, cotisations, ACCRE,
+> PFU/ZFU en 2018). Les taux n'ont pas été mis à jour pour les années suivantes : ne pas utiliser ce calculateur pour
+> une année plus récente.
+
 ## 🚀 Features
 
 - **Calculs précis** pour les années fiscales 2017 et 2018
 - **Comparaison EURL vs SASU** avec différences de cotisations
 - **Détails complets** : IS, IR, cotisations sociales, dividendes
-- **Options fiscales** : ACCRE, PFU (Flat Tax), ZFU
+- **Options fiscales** : ACCRE (2017 et 2018), PFU (Flat Tax, 2018), ZFU (2018)
 - **Caisse de retraite** : CIPAV ou SSI (EURL 2018+)
 - **Sauvegardes** : enregistrez vos scénarios avec nom personnalisé
 - **Export/Import** : partagez vos configurations au format JSON
@@ -31,7 +35,7 @@ Compare les revenus nets entre EURL et SASU en tenant compte de toutes les charg
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 22 (version used in CI)
 - Yarn package manager
 
 ### Installation
@@ -48,7 +52,7 @@ yarn install
 yarn dev
 ```
 
-The application will be available at `http://localhost:5173`
+The application will be available at `http://localhost:5173/eurl-sasu/` (Vite `base` is `/eurl-sasu/`)
 
 ### Available Scripts
 
@@ -67,6 +71,7 @@ yarn test:unit:coverage # Generate coverage report
 
 # Code Quality
 yarn lint             # Run ESLint and fix issues
+yarn lint:check       # Run ESLint without fixing (used in CI)
 yarn type-check       # Run TypeScript compiler check
 ```
 
@@ -90,16 +95,19 @@ src/
 │   │   ├── ImpotSocieteDetails.vue
 │   │   └── ImpotRevenuDetails.vue
 │   └── common/                  # Shared components
+│       ├── BaseModal.vue        # Modal wrapper
 │       ├── HelpModal.vue        # General help documentation
 │       └── HelpIcon.vue         # Field-specific help icons
 ├── services/                    # Business logic (framework-agnostic)
 │   ├── ExerciceCalculator.ts    # Main calculation orchestrator
 │   ├── ImpotSociete.ts          # Corporate tax calculator
 │   ├── ImpotRevenu.ts           # Income tax calculator
-│   ├── CotisationsSociales.ts   # Social contributions (EURL)
+│   ├── CotisationsSociales.ts   # Social contributions (EURL, 2018)
+│   ├── CotisationsSociales2017.ts # Social contributions (EURL, 2017)
 │   ├── Tranche.ts               # Tax bracket utility
 │   └── pension-funds/           # Pension fund implementations
 │       ├── Cipav.ts
+│       ├── Cipav2017.ts
 │       ├── SSI.ts
 │       └── PensionFundBase.ts
 ├── config/
@@ -125,15 +133,15 @@ src/
 
 ### Year Configuration System
 
-Each year has a configuration object in `src/config/years/`:
+Each year has a configuration object in `src/config/years/` (typed in `src/types/year-config.types.ts`):
 
 ```typescript
 interface YearConfig {
   year: number
-  pass: number  // PASS (Plafond Annuel de la Sécurité Sociale)
+  pass: number // PASS (Plafond Annuel de la Sécurité Sociale)
   taxBrackets: {
-    ir: TaxBracket[]  // Income tax brackets
-    is: TaxBracket[]  // Corporate tax brackets
+    ir: TaxBracket[] // Income tax brackets
+    is: TaxBracket[] // Corporate tax brackets
   }
   rates: {
     tauxCsgCrds: number
@@ -142,10 +150,13 @@ interface YearConfig {
     // ... all year-specific rates
   }
   features: {
-    hasPensionFundSelection: boolean  // CIPAV/SSI (2018+)
-    hasFlatTax: boolean               // PFU (2018+)
-    hasZfuExemption: boolean          // ZFU (2018+)
+    hasPensionFundSelection: boolean // CIPAV/SSI (2018+)
+    hasFlatTax: boolean // PFU (2018+)
+    hasZfuExemption: boolean // ZFU (2018+)
+    hasAccre: boolean // ACCRE (both years)
   }
+  defaultForm: 'EURL' | 'SASU'
+  defaultPensionFund: 'CIPAV' | 'SSI'
 }
 ```
 
@@ -189,10 +200,11 @@ yarn build
 ### GitHub Actions Workflow
 
 The CI/CD pipeline:
+
 1. **Install**: Install dependencies with Yarn caching
-2. **Test**: Run tests, lint, and type-check in parallel
+2. **Test**: Run unit tests, lint (`yarn lint:check`) and type-check in parallel (matrix jobs)
 3. **Build**: Build production bundle (only on main)
-4. **Deploy**: Deploy to GitHub Pages (only on main)
+4. **Deploy**: Publish `dist/` to the `gh-pages` branch for GitHub Pages (only on main)
 
 ## 📖 How It Works
 
@@ -210,12 +222,14 @@ The CI/CD pipeline:
 ### Key Differences: EURL vs SASU
 
 **EURL (Entreprise Unipersonnelle à Responsabilité Limitée)**:
+
 - Gérant majoritaire = Travailleur Non Salarié (TNS)
 - Cotisations sociales ~45% du net sur la rémunération
 - Dividendes: cotisations sociales élevées (45%) sur la part > 10% du capital
 - Caisse de retraite: CIPAV ou SSI (2018+)
 
 **SASU (Société par Actions Simplifiée Unipersonnelle)**:
+
 - Président = Assimilé Salarié
 - Cotisations sociales ~82% du net sur la rémunération en 2018, ~89% en 2017 (~35% avec ACCRE)
 - Dividendes: 17.2% de prélèvements sociaux uniquement
@@ -232,16 +246,23 @@ Contributions are welcome! Please ensure:
 
 ## 📝 License
 
-MIT License - see LICENSE file for details
+[MIT](LICENSE), including the code inherited from
+[AntoineViau/eurl-sasu](https://github.com/AntoineViau/eurl-sasu).
 
 ## 👤 Author
 
 Guillaume Sainthillier (guillaume.sainthillier@gmail.com)
 
+## 🙏 Credits
+
+Fork of [AntoineViau/eurl-sasu](https://github.com/AntoineViau/eurl-sasu) by Antoine Viau, whose original AngularJS
+2017 and 2018 calculators this Vue 3 + TypeScript rewrite is based on.
+
 ## 🔗 Links
 
 - **Live Demo**: https://guillaume-sainthillier.github.io/eurl-sasu/
 - **Repository**: https://github.com/guillaume-sainthillier/eurl-sasu
+- **Upstream**: https://github.com/AntoineViau/eurl-sasu
 
 ---
 

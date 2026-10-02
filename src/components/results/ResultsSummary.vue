@@ -10,6 +10,8 @@ import ImpotRevenuDetails from './ImpotRevenuDetails.vue'
 
 const { result, params } = useCalculation()
 
+const forme = computed(() => params.value.forme.value as 'EURL' | 'SASU')
+
 const showDetailedBreakdown = ref(false)
 
 const totalTaxes = computed(() => {
@@ -129,13 +131,13 @@ const effectiveTaxRate = computed(() => {
     <div v-if="result && showDetailedBreakdown" id="detailed-breakdown" class="space-y-6">
       <RemunerationDetails
         :result="result"
-        :forme="(params.forme.value as string) as 'EURL' | 'SASU'"
+        :forme="forme"
       />
 
       <DividendesDetails
         v-if="result.dividendes.brut > 0"
         :result="result"
-        :forme="(params.forme.value as string) as 'EURL' | 'SASU'"
+        :forme="forme"
         :has-p-f-u="Boolean(params.pfu.value)"
       />
 

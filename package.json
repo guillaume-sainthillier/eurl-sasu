@@ -11,6 +11,7 @@
     "test:unit:watch": "vitest",
     "test:unit:coverage": "vitest run --coverage",
     "lint": "eslint . --fix",
+    "lint:check": "eslint .",
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
@@ -19,6 +20,7 @@
     "vue": "^3.4.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^25.0.10",
     "@vitejs/plugin-vue": "^6.0.3",

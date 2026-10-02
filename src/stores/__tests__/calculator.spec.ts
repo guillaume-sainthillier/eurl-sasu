@@ -35,7 +35,7 @@ describe('Calculator Store', () => {
 
   it('should auto-disable PFU when switching from SASU to EURL', () => {
     const store = useCalculatorStore()
-    store.params.forme.value = 'SASU' as any
+    store.params.forme.value = 'SASU'
     store.params.pfu.value = 1
 
     store.updateParam('forme', 'EURL')
