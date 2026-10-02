@@ -5,3 +5,7 @@
 448012232a3acdd80530508850fabe278b02e0e8
 # style: format with Biome
 19a17fe7ec1b8621f044842e2e4f18b30d2b7514
+# style: format Vue and HTML files with Biome
+de8911cd624e20b187824c16bfe8b42ce4402e3c
+# style: reformat with the workspace rules
+555a16b9e54912134aac2587f8070f4f6ca15488

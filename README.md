@@ -138,26 +138,26 @@ Each year has a configuration object in `src/config/years/` (typed in `src/types
 
 ```typescript
 interface YearConfig {
-  year: number
-  pass: number // PASS (Plafond Annuel de la Sécurité Sociale)
-  taxBrackets: {
-    ir: TaxBracket[] // Income tax brackets
-    is: TaxBracket[] // Corporate tax brackets
-  }
-  rates: {
-    tauxCsgCrds: number
-    tauxCsgDeductible: number
-    tauxAbattementDividendes: number
-    // ... all year-specific rates
-  }
-  features: {
-    hasPensionFundSelection: boolean // CIPAV/SSI (2018+)
-    hasFlatTax: boolean // PFU (2018+)
-    hasZfuExemption: boolean // ZFU (2018+)
-    hasAccre: boolean // ACCRE (both years)
-  }
-  defaultForm: 'EURL' | 'SASU'
-  defaultPensionFund: 'CIPAV' | 'SSI'
+    year: number
+    pass: number // PASS (Plafond Annuel de la Sécurité Sociale)
+    taxBrackets: {
+        ir: TaxBracket[] // Income tax brackets
+        is: TaxBracket[] // Corporate tax brackets
+    }
+    rates: {
+        tauxCsgCrds: number
+        tauxCsgDeductible: number
+        tauxAbattementDividendes: number
+        // ... all year-specific rates
+    }
+    features: {
+        hasPensionFundSelection: boolean // CIPAV/SSI (2018+)
+        hasFlatTax: boolean // PFU (2018+)
+        hasZfuExemption: boolean // ZFU (2018+)
+        hasAccre: boolean // ACCRE (both years)
+    }
+    defaultForm: 'EURL' | 'SASU'
+    defaultPensionFund: 'CIPAV' | 'SSI'
 }
 ```
 
@@ -214,10 +214,10 @@ The CI/CD pipeline:
 1. User inputs parameters (CA, charges, rémunération, etc.)
 2. Calculator store triggers reactive calculation
 3. `ExerciceCalculator` orchestrates all calculations:
-   - Calculates IS (Impôt sur les Sociétés)
-   - Calculates social contributions (EURL or SASU)
-   - Calculates IR (Impôt sur le Revenu)
-   - Computes net income
+    - Calculates IS (Impôt sur les Sociétés)
+    - Calculates social contributions (EURL or SASU)
+    - Calculates IR (Impôt sur le Revenu)
+    - Computes net income
 4. Results are displayed with detailed breakdowns
 
 ### Key Differences: EURL vs SASU

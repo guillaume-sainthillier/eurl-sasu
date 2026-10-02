@@ -5,144 +5,144 @@
  * hover and active feedback, a keyboard focus ring and a disabled state.
  */
 @layer components {
-  /* Buttons */
-  .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 font-medium cursor-pointer select-none
+    /* Buttons */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 font-medium cursor-pointer select-none
       transition-[background-color,border-color,color,box-shadow,transform] duration-150
       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
       active:scale-[0.98]
       disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100
       motion-reduce:transition-none motion-reduce:active:scale-100;
-  }
+    }
 
-  .btn-sm {
-    @apply px-3 py-1.5 text-sm;
-  }
+    .btn-sm {
+        @apply px-3 py-1.5 text-sm;
+    }
 
-  .btn-primary {
-    @apply bg-blue-600 text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 disabled:hover:bg-blue-600;
-  }
+    .btn-primary {
+        @apply bg-blue-600 text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 disabled:hover:bg-blue-600;
+    }
 
-  .btn-secondary {
-    @apply bg-gray-100 text-gray-800 hover:bg-gray-200 active:bg-gray-300 disabled:hover:bg-gray-100;
-  }
+    .btn-secondary {
+        @apply bg-gray-100 text-gray-800 hover:bg-gray-200 active:bg-gray-300 disabled:hover:bg-gray-100;
+    }
 
-  .btn-outline {
-    @apply border border-gray-300 bg-white text-gray-800 shadow-sm hover:border-gray-400 hover:bg-gray-50 active:bg-gray-100;
-  }
+    .btn-outline {
+        @apply border border-gray-300 bg-white text-gray-800 shadow-sm hover:border-gray-400 hover:bg-gray-50 active:bg-gray-100;
+    }
 
-  .btn-danger {
-    @apply bg-red-600 text-white shadow-sm hover:bg-red-700 active:bg-red-800 focus-visible:ring-red-500;
-  }
+    .btn-danger {
+        @apply bg-red-600 text-white shadow-sm hover:bg-red-700 active:bg-red-800 focus-visible:ring-red-500;
+    }
 
-  .btn-danger-ghost {
-    @apply text-red-600 hover:bg-red-50 hover:text-red-700 active:bg-red-100 focus-visible:ring-red-500;
-  }
+    .btn-danger-ghost {
+        @apply text-red-600 hover:bg-red-50 hover:text-red-700 active:bg-red-100 focus-visible:ring-red-500;
+    }
 
-  .btn-success {
-    @apply bg-green-600 text-white shadow-sm hover:bg-green-600 focus-visible:ring-green-500;
-  }
+    .btn-success {
+        @apply bg-green-600 text-white shadow-sm hover:bg-green-600 focus-visible:ring-green-500;
+    }
 
-  /* Square icon-only button (close, delete...) */
-  .btn-icon {
-    @apply inline-flex size-9 items-center justify-center rounded-lg text-gray-500 cursor-pointer
+    /* Square icon-only button (close, delete...) */
+    .btn-icon {
+        @apply inline-flex size-9 items-center justify-center rounded-lg text-gray-500 cursor-pointer
       transition-colors duration-150 hover:bg-gray-100 hover:text-gray-800 active:bg-gray-200
       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500
       motion-reduce:transition-none;
-  }
+    }
 
-  /* Text inputs, number inputs, selects and textareas */
-  .form-control {
-    @apply w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm
+    /* Text inputs, number inputs, selects and textareas */
+    .form-control {
+        @apply w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm
       transition-[border-color,box-shadow] duration-150
       placeholder:text-gray-400 hover:border-gray-400
       focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30
       read-only:bg-gray-50 read-only:hover:border-gray-300
       motion-reduce:transition-none;
-  }
+    }
 
-  /* Checkboxes and radios */
-  .form-check {
-    @apply size-4 shrink-0 cursor-pointer accent-blue-600 rounded
+    /* Checkboxes and radios */
+    .form-check {
+        @apply size-4 shrink-0 cursor-pointer accent-blue-600 rounded
       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2;
-  }
+    }
 
-  /* Clickable label wrapping a checkbox or radio */
-  .form-check-label {
-    @apply inline-flex items-center gap-2 rounded-md px-1.5 py-1 -mx-1.5 cursor-pointer text-gray-700
+    /* Clickable label wrapping a checkbox or radio */
+    .form-check-label {
+        @apply inline-flex items-center gap-2 rounded-md px-1.5 py-1 -mx-1.5 cursor-pointer text-gray-700
       transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900
       has-[:checked]:text-gray-900 has-[:checked]:font-medium
       motion-reduce:transition-none;
-  }
+    }
 
-  /* Range slider */
-  .form-range {
-    @apply h-2 w-full cursor-pointer appearance-none rounded-full bg-gray-200 accent-blue-600
+    /* Range slider */
+    .form-range {
+        @apply h-2 w-full cursor-pointer appearance-none rounded-full bg-gray-200 accent-blue-600
       focus-visible:outline-none;
-  }
+    }
 }
 
 /* Range thumb: pseudo-elements cannot be styled with utilities */
 .form-range::-webkit-slider-thumb {
-  appearance: none;
-  width: 1.125rem;
-  height: 1.125rem;
-  border-radius: 9999px;
-  background: var(--color-blue-600);
-  border: 2px solid white;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
-  transition:
-    transform 150ms,
-    box-shadow 150ms;
+    appearance: none;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 9999px;
+    background: var(--color-blue-600);
+    border: 2px solid white;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+    transition:
+        transform 150ms,
+        box-shadow 150ms;
 }
 
 .form-range::-moz-range-thumb {
-  width: 1.125rem;
-  height: 1.125rem;
-  border-radius: 9999px;
-  background: var(--color-blue-600);
-  border: 2px solid white;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
-  transition:
-    transform 150ms,
-    box-shadow 150ms;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 9999px;
+    background: var(--color-blue-600);
+    border: 2px solid white;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+    transition:
+        transform 150ms,
+        box-shadow 150ms;
 }
 
 .form-range:hover::-webkit-slider-thumb {
-  transform: scale(1.15);
+    transform: scale(1.15);
 }
 
 .form-range:hover::-moz-range-thumb {
-  transform: scale(1.15);
+    transform: scale(1.15);
 }
 
 .form-range:active::-webkit-slider-thumb {
-  background: var(--color-blue-700);
+    background: var(--color-blue-700);
 }
 
 .form-range:active::-moz-range-thumb {
-  background: var(--color-blue-700);
+    background: var(--color-blue-700);
 }
 
 .form-range:focus-visible::-webkit-slider-thumb {
-  box-shadow:
-    0 0 0 2px white,
-    0 0 0 4px var(--color-blue-500);
+    box-shadow:
+        0 0 0 2px white,
+        0 0 0 4px var(--color-blue-500);
 }
 
 .form-range:focus-visible::-moz-range-thumb {
-  box-shadow:
-    0 0 0 2px white,
-    0 0 0 4px var(--color-blue-500);
+    box-shadow:
+        0 0 0 2px white,
+        0 0 0 4px var(--color-blue-500);
 }
 
 /* Vendor pseudo-elements must stay in separate rules: an unknown one invalidates the whole selector list */
 @media (prefers-reduced-motion: reduce) {
-  .form-range::-webkit-slider-thumb {
-    transition: none;
-  }
+    .form-range::-webkit-slider-thumb {
+        transition: none;
+    }
 
-  .form-range::-moz-range-thumb {
-    transition: none;
-  }
+    .form-range::-moz-range-thumb {
+        transition: none;
+    }
 }
