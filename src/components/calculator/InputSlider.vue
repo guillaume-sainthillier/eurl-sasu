@@ -16,9 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
   suffix: '€'
 })
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: number): void
-}>()
+const emit = defineEmits<(e: 'update:modelValue', value: number) => void>()
 
 const localValue = computed({
   get: () => props.modelValue,

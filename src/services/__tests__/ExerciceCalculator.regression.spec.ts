@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest'
-import ExerciceCalculator from '../ExerciceCalculator'
-import type { ExerciceParams } from '../ExerciceCalculator'
-import ImpotRevenu from '../ImpotRevenu'
-import ImpotSociete from '../ImpotSociete'
+import { describe, expect, it } from 'vitest'
 import { year2017 } from '@/config/years/year2017'
 import { year2018 } from '@/config/years/year2018'
+import type { ExerciceParams } from '../ExerciceCalculator'
+import ExerciceCalculator from '../ExerciceCalculator'
+import ImpotRevenu from '../ImpotRevenu'
+import ImpotSociete from '../ImpotSociete'
 
 /**
  * Regression tests for bugs found during the audit.
@@ -118,11 +118,19 @@ describe('ExerciceCalculator - regressions', () => {
       ['EURL', 100000, 1000],
       ['EURL', 100000, 20000],
       ['SASU', 100000, 1000]
-    ] as const)('%s with capital %i and dividends %i never nets more than gross', (forme, capital, dividendes) => {
-      const result = new ExerciceCalculator().calculate({ ...baseParams, forme, capital, dividendes })
-      expect(result.dividendes.net).toBeLessThanOrEqual(result.dividendes.brut)
-      expect(result.dividendes.cotisationsSociales).toBeGreaterThanOrEqual(0)
-    })
+    ] as const)(
+      '%s with capital %i and dividends %i never nets more than gross',
+      (forme, capital, dividendes) => {
+        const result = new ExerciceCalculator().calculate({
+          ...baseParams,
+          forme,
+          capital,
+          dividendes
+        })
+        expect(result.dividendes.net).toBeLessThanOrEqual(result.dividendes.brut)
+        expect(result.dividendes.cotisationsSociales).toBeGreaterThanOrEqual(0)
+      }
+    )
   })
 
   describe('SASU ACCRE', () => {

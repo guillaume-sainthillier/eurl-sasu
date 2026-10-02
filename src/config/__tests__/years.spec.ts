@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { AVAILABLE_YEARS, getYearConfig, getLatestYearConfig, getDefaultYearConfig } from '../years'
+import { describe, expect, it } from 'vitest'
+import { AVAILABLE_YEARS, getDefaultYearConfig, getLatestYearConfig, getYearConfig } from '../years'
 import { year2017 } from '../years/year2017'
 import { year2018 } from '../years/year2018'
 

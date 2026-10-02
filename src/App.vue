@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import YearSelector from './components/calculator/YearSelector.vue'
+import { onMounted, ref } from 'vue'
 import CalculatorForm from './components/calculator/CalculatorForm.vue'
 import SavedStates from './components/calculator/SavedStates.vue'
-import ResultsSummary from './components/results/ResultsSummary.vue'
+import YearSelector from './components/calculator/YearSelector.vue'
 import HelpModal from './components/common/HelpModal.vue'
+import ResultsSummary from './components/results/ResultsSummary.vue'
 import { useUrlState } from './composables/useUrlState'
 
 const appVersion = ref('2.0.0')

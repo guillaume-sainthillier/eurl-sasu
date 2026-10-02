@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest'
-import CotisationsSociales2017 from '../CotisationsSociales2017'
-import Cipav2017 from '../pension-funds/Cipav2017'
-import ExerciceCalculator from '../ExerciceCalculator'
-import type { ExerciceParams } from '../ExerciceCalculator'
+import { describe, expect, it } from 'vitest'
 import { year2017 } from '@/config/years/year2017'
 import { year2018 } from '@/config/years/year2018'
+import CotisationsSociales2017 from '../CotisationsSociales2017'
+import type { ExerciceParams } from '../ExerciceCalculator'
+import ExerciceCalculator from '../ExerciceCalculator'
+import Cipav2017 from '../pension-funds/Cipav2017'
 
 function cotisations2017(remuneration: number, accre = false): CotisationsSociales2017 {
   const cs = new CotisationsSociales2017()

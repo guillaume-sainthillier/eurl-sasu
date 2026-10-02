@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { Lightbulb } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { helpContent } from '@/config/helpContent'
-import { Lightbulb } from 'lucide-vue-next'
 import BaseModal from './BaseModal.vue'
 
 interface Props {

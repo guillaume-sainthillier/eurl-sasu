@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { ChevronDown } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import { useCalculation } from '@/composables/useCalculation'
 import { formatCurrency } from '@/utils/formatters'
-import { ChevronDown } from 'lucide-vue-next'
-import RemunerationDetails from './RemunerationDetails.vue'
 import DividendesDetails from './DividendesDetails.vue'
-import ImpotSocieteDetails from './ImpotSocieteDetails.vue'
 import ImpotRevenuDetails from './ImpotRevenuDetails.vue'
+import ImpotSocieteDetails from './ImpotSocieteDetails.vue'
+import RemunerationDetails from './RemunerationDetails.vue'
 
 const { result, params } = useCalculation()
 

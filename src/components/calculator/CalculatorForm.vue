@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useCalculation } from '@/composables/useCalculation'
-import InputSlider from './InputSlider.vue'
 import HelpIcon from '../common/HelpIcon.vue'
+import InputSlider from './InputSlider.vue'
 
 const { params, updateParam, availableFeatures } = useCalculation()
 

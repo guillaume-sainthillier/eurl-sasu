@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { getDefaultYearConfig, getYearConfig } from '@/config/years'
+import type { ExerciceParams, ExerciceResult } from '@/services/ExerciceCalculator'
+import ExerciceCalculator from '@/services/ExerciceCalculator'
 import type { CalculatorState } from '@/types/calculator.types'
 import type { YearConfig } from '@/types/year-config.types'
-import { getYearConfig, getDefaultYearConfig } from '@/config/years'
-import ExerciceCalculator from '@/services/ExerciceCalculator'
-import type { ExerciceParams, ExerciceResult } from '@/services/ExerciceCalculator'
 
 export const useCalculatorStore = defineStore('calculator', () => {
   // State
@@ -101,10 +101,7 @@ export const useCalculatorStore = defineStore('calculator', () => {
   }
   const CHECKBOX_PARAMS = ['accre', 'pfu', 'zfu']
 
-  function updateParam(
-    paramName: keyof CalculatorState['params'],
-    value: number | string | 0 | 1
-  ) {
+  function updateParam(paramName: keyof CalculatorState['params'], value: number | string | 0 | 1) {
     const param = params.value[paramName]
     if (!param) {
       return

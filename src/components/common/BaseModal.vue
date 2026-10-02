@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, ref, useId, watch } from 'vue'
 import { X } from 'lucide-vue-next'
+import { nextTick, onBeforeUnmount, ref, useId, watch } from 'vue'
 
 interface Props {
   open: boolean
@@ -12,9 +12,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md'
 })
 
-const emit = defineEmits<{
-  (e: 'close'): void
-}>()
+const emit = defineEmits<(e: 'close') => void>()
 
 const titleId = useId()
 const panel = ref<HTMLElement | null>(null)

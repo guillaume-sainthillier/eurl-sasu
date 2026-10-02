@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { Check, Copy, Link } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { useUrlState } from '@/composables/useUrlState'
-import { Check, Copy, Link } from 'lucide-vue-next'
 import BaseModal from '../common/BaseModal.vue'
 
 const { encodeStateToUrl, copyShareableLink } = useUrlState()

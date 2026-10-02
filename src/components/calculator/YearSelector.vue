@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { AVAILABLE_YEARS } from '@/config/years'
 import { useCalculation } from '@/composables/useCalculation'
+import { AVAILABLE_YEARS } from '@/config/years'
 
 const { selectedYear, setYear, yearConfig } = useCalculation()
 
