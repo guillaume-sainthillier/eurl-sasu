@@ -163,9 +163,19 @@ export default class CotisationsSociales {
     return 2.9
   }
 
+  // ACCRE
+  /**
+   * Amount (in €) of contributions waived by the ACCRE, subtracted from the total.
+   * Not modelled for this contribution model yet.
+   */
+  getExonerationAccre(): number {
+    return 0
+  }
+
   // TOTAL COTISATIONS
   getCotisations(): number {
     return (
+      -this.getExonerationAccre() +
       this.getMaladie() +
       this.getMaladie2() +
       this.getAllocationsFamiliales() +

@@ -1,8 +1,11 @@
 import CotisationsSociales from './CotisationsSociales'
+import CotisationsSociales2017 from './CotisationsSociales2017'
 import Cipav from './pension-funds/Cipav'
+import Cipav2017 from './pension-funds/Cipav2017'
 import SSI from './pension-funds/SSI'
 import ImpotRevenu from './ImpotRevenu'
 import ImpotSociete from './ImpotSociete'
+import type { PensionFundBase } from './pension-funds/PensionFundBase'
 import type { YearConfig } from '@/types/year-config.types'
 import { getDefaultYearConfig } from '@/config/years'
 
@@ -107,8 +110,24 @@ export default class ExerciceCalculator {
     this.tauxFlatTax = rates.tauxFlatTax
 
     this.impotSociete = new ImpotSociete({ tranches: yearConfig.taxBrackets.is })
-    this.cotisations = new CotisationsSociales()
+    this.cotisations = this.isLegacy2017() ? new CotisationsSociales2017() : new CotisationsSociales()
     this.impotRevenu = new ImpotRevenu({ tranches: yearConfig.taxBrackets.ir })
+  }
+
+  /**
+   * 2017 EURL contributions follow the CIPAV-only model of the original 2017 app
+   */
+  private isLegacy2017(): boolean {
+    return this.yearConfig.year <= 2017
+  }
+
+  private createCaisseRetraite(params: ExerciceParams, revenus: number): PensionFundBase {
+    if (this.isLegacy2017()) {
+      return new Cipav2017(revenus, this.PASS)
+    }
+    return params.caisseRetraite === 'CIPAV'
+      ? new Cipav(revenus, this.PASS)
+      : new SSI(revenus, this.PASS)
   }
 
   calculate(params: ExerciceParams): ExerciceResult {
@@ -165,10 +184,7 @@ export default class ExerciceCalculator {
 
     if (params.forme === 'EURL') {
       // EURL: Self-employed social contributions
-      this.cotisations.caisseRetraite =
-        params.caisseRetraite === 'CIPAV'
-          ? new Cipav(res.remuneration.net, this.PASS)
-          : new SSI(res.remuneration.net, this.PASS)
+      this.cotisations.caisseRetraite = this.createCaisseRetraite(params, res.remuneration.net)
 
       this.cotisations.remuneration = res.remuneration.net
       this.cotisations.accre = params.accre

@@ -195,6 +195,17 @@ const showCotisationsDetail = computed(() => {
           </div>
         </div>
       </div>
+
+      <!-- ACCRE -->
+      <div v-if="result.remuneration.cs!.getExonerationAccre() > 0" class="p-3 bg-green-50 rounded text-sm">
+        <div class="font-medium text-gray-700 mb-2">Exonération ACCRE</div>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="text-gray-600">Montant :</div>
+          <div class="font-mono text-right font-semibold text-green-700">
+            -{{ formatCurrency(result.remuneration.cs!.getExonerationAccre()) }}
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- SASU: Simplified -->
