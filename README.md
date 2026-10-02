@@ -246,9 +246,8 @@ Contributions are welcome! Please ensure:
 
 ## 📝 License
 
-No license file is provided. The upstream project
-[AntoineViau/eurl-sasu](https://github.com/AntoineViau/eurl-sasu) does not declare an open-source license, so the
-licensing of this fork has not been settled yet.
+[MIT](LICENSE), including the code inherited from
+[AntoineViau/eurl-sasu](https://github.com/AntoineViau/eurl-sasu).
 
 ## 👤 Author
 
