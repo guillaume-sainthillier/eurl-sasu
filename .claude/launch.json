@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "vite",
-            "runtimeExecutable": "yarn",
+            "runtimeExecutable": "pnpm",
             "runtimeArgs": ["dev", "--port", "5173", "--strictPort"],
             "port": 5173
         }
