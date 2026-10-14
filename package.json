@@ -49,5 +49,6 @@
     "lint-staged": {
         "*.{js,jsx,ts,tsx,mjs,cjs,json,vue}": "biome check --write --no-errors-on-unmatched",
         "*.{css,md,yaml,yml}": "prettier --write"
-    }
+    },
+    "packageManager": "pnpm@12.11.2"
 }

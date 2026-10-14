@@ -1,0 +1,4 @@
+# Dependencies allowed to run install scripts (pnpm blocks them by default)
+allowBuilds:
+    # Its postinstall checks and links the platform binary used by Vite
+    esbuild: true

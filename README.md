@@ -36,7 +36,7 @@ Compare les revenus nets entre EURL et SASU en tenant compte de toutes les charg
 ### Prerequisites
 
 - Node.js 22 (version used in CI)
-- Yarn package manager
+- [pnpm](https://pnpm.io/) (version pinned by `packageManager` in `package.json`)
 
 ### Installation
 
@@ -46,10 +46,10 @@ git clone https://github.com/guillaume-sainthillier/eurl-sasu.git
 cd eurl-sasu
 
 # Install dependencies
-yarn install
+pnpm install
 
 # Start development server
-yarn dev
+pnpm dev
 ```
 
 The application will be available at `http://localhost:5173/eurl-sasu/` (Vite `base` is `/eurl-sasu/`)
@@ -58,22 +58,22 @@ The application will be available at `http://localhost:5173/eurl-sasu/` (Vite `b
 
 ```bash
 # Development
-yarn dev              # Start dev server with hot reload
+pnpm dev              # Start dev server with hot reload
 
 # Building
-yarn build            # Build for production (outputs to dist/)
-yarn preview          # Preview production build locally
+pnpm build            # Build for production (outputs to dist/)
+pnpm preview          # Preview production build locally
 
 # Testing
-yarn test:unit        # Run unit tests
-yarn test:unit:watch  # Run tests in watch mode
-yarn test:unit:coverage # Generate coverage report
+pnpm test:unit        # Run unit tests
+pnpm test:unit:watch  # Run tests in watch mode
+pnpm test:unit:coverage # Generate coverage report
 
 # Code Quality
-yarn lint             # Run Biome (lint + format) and fix issues
-yarn lint:check       # Run Biome without fixing (used in CI)
-yarn prettier         # Format CSS, Markdown and YAML (files Biome does not handle)
-yarn type-check       # Run TypeScript compiler check
+pnpm lint             # Run Biome (lint + format) and fix issues
+pnpm lint:check       # Run Biome without fixing (used in CI)
+pnpm prettier         # Format CSS, Markdown and YAML (files Biome does not handle)
+pnpm type-check       # Run TypeScript compiler check
 ```
 
 ## 📁 Project Structure
@@ -179,8 +179,8 @@ The project has comprehensive test coverage:
 Run tests with:
 
 ```bash
-yarn test:unit           # Run all tests
-yarn test:unit:coverage  # Generate coverage report
+pnpm test:unit           # Run all tests
+pnpm test:unit:coverage  # Generate coverage report
 ```
 
 Coverage is available in `coverage/index.html` after running coverage tests.
@@ -193,7 +193,7 @@ The application is automatically deployed to GitHub Pages via GitHub Actions on 
 
 ```bash
 # Build the production bundle
-yarn build
+pnpm build
 
 # The dist/ folder can be deployed to any static hosting service
 ```
@@ -202,8 +202,8 @@ yarn build
 
 The CI/CD pipeline:
 
-1. **Install**: Install dependencies with Yarn caching
-2. **Test**: Run unit tests, lint (`yarn lint:check`) and type-check in parallel (matrix jobs)
+1. **Install**: Install dependencies with pnpm (store cached)
+2. **Test**: Run unit tests, lint (`pnpm lint:check`) and type-check in parallel (matrix jobs)
 3. **Build**: Build production bundle (only on main)
 4. **Deploy**: Publish `dist/` to the `gh-pages` branch for GitHub Pages (only on main)
 
@@ -240,10 +240,10 @@ The CI/CD pipeline:
 
 Contributions are welcome! Please ensure:
 
-1. All tests pass: `yarn test:unit`
-2. Code is linted: `yarn lint`
-3. Types are valid: `yarn type-check`
-4. Build succeeds: `yarn build`
+1. All tests pass: `pnpm test:unit`
+2. Code is linted: `pnpm lint`
+3. Types are valid: `pnpm type-check`
+4. Build succeeds: `pnpm build`
 
 ## 📝 License
 
