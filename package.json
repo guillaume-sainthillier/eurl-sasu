@@ -14,7 +14,8 @@
         "lint:check": "biome check .",
         "prettier": "prettier --write \"**/*.{css,md}\" \".github/**/*.{yml,yaml}\"",
         "type-check": "vue-tsc --noEmit",
-        "prepare": "husky"
+        "prepare": "husky",
+        "og-image": "node scripts/og-image.mjs"
     },
     "dependencies": {
         "lucide-vue-next": "^0.562.0",
