@@ -18,7 +18,7 @@
         "og-image": "node scripts/og-image.mjs"
     },
     "dependencies": {
-        "lucide-vue-next": "^0.577.0",
+        "lucide-vue-next": "^1.0.0",
         "pinia": "^3.0.4",
         "vue": "^3.4.0"
     },
