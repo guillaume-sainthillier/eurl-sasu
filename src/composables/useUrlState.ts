@@ -43,7 +43,7 @@ export function useUrlState() {
         const year = params.get('year')
         if (year) {
             // setYear ignores years without a configuration
-            calculatorStore.setYear(parseInt(year))
+            calculatorStore.setYear(parseInt(year, 10))
         }
 
         // Load numeric params
@@ -76,13 +76,13 @@ export function useUrlState() {
 
         // Load checkboxes
         const accre = params.get('accre')
-        if (accre) calculatorStore.updateParam('accre', parseInt(accre) as 0 | 1)
+        if (accre) calculatorStore.updateParam('accre', parseInt(accre, 10) as 0 | 1)
 
         const pfu = params.get('pfu')
-        if (pfu) calculatorStore.updateParam('pfu', parseInt(pfu) as 0 | 1)
+        if (pfu) calculatorStore.updateParam('pfu', parseInt(pfu, 10) as 0 | 1)
 
         const zfu = params.get('zfu')
-        if (zfu) calculatorStore.updateParam('zfu', parseInt(zfu) as 0 | 1)
+        if (zfu) calculatorStore.updateParam('zfu', parseInt(zfu, 10) as 0 | 1)
 
         // Load string params
         const forme = params.get('forme')

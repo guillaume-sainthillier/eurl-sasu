@@ -27,7 +27,7 @@ describe('YearSelector.vue', () => {
         const store = useCalculatorStore()
 
         const select = wrapper.find('select')
-        const value = parseInt(select.element.value)
+        const value = parseInt(select.element.value, 10)
 
         expect(value).toBe(store.selectedYear)
     })
