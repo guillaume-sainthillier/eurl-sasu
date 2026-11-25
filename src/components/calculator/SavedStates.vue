@@ -205,10 +205,10 @@ function processFile(file: File) {
                     :key="state.name"
                     class="p-4 border rounded-lg transition-colors"
                     :class="
-            state.name === savedStatesStore.currentStateName
-              ? 'border-blue-500 bg-blue-50'
-              : 'border-gray-200'
-          "
+                        state.name === savedStatesStore.currentStateName
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-gray-200'
+                    "
                     :aria-current="state.name === savedStatesStore.currentStateName ? 'true' : undefined"
                 >
                     <div class="flex justify-between items-center gap-3">
